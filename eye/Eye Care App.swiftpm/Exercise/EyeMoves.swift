@@ -2,7 +2,7 @@
 //  File.swift
 //  Eye Care App
 //
-//  Created by Akhlak iSDP on 22/02/25.
+//  Created by Akhlak iSDP on 10/02/25.
 //
 
 import Foundation
@@ -14,13 +14,11 @@ import AVFoundation
 enum RollingPattern {
     case circular
     case infinity
-    case octagonal
     
     var name: String {
         switch self {
         case .circular: return "Circular"
         case .infinity: return "Infinity"
-        case .octagonal: return "Octagonal"
         }
     }
 }
@@ -45,22 +43,17 @@ struct EyeRollingGuideView: View {
                             PatternRow(
                                 title: "Circular",
                                 description: "Smooth circular movement",
-                                duration: "30 seconds"
+                                duration: "20 seconds"
                             )
                             
                             PatternRow(
                                 title: "Figure Eight",
                                 description: "Flowing infinity pattern",
-                                duration: "30 seconds"
-                            )
-                            
-                            PatternRow(
-                                title: "Octagonal",
-                                description: "Eight-point movement",
-                                duration: "30 seconds"
+                                duration: "20 seconds"
                             )
                         }
                     }
+                    
                     CardView(icon: "checkmark.circle.fill", iconColor: .green, title: "Benefits") {
                         VStack(alignment: .leading, spacing: 8) {
                             BenefitRow(text: "Strengthens eye muscles")
@@ -69,8 +62,7 @@ struct EyeRollingGuideView: View {
                             BenefitRow(text: "Enhances focus flexibility")
                         }
                     }
-                    
-                    .padding()
+                    .padding(.vertical, 8)
                 }
                 .background(Color(.systemGroupedBackground))
                 .navigationTitle("Eye Moves")
@@ -126,7 +118,7 @@ struct PatternRow: View {
 
 struct EyeRollingView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var remainingTime: TimeInterval = 90
+    @State private var remainingTime: TimeInterval = 40
     @State private var currentDirection = "Clockwise"
     @State private var rotationAngle: Double = 0
     @State private var isExerciseActive = false
@@ -263,7 +255,7 @@ struct EyeRollingView: View {
     
     private func startExercise() {
         isExerciseActive = true
-        remainingTime = 90
+        remainingTime = 40
         rotationAngle = 0
         currentPattern = .circular
         
@@ -273,15 +265,12 @@ struct EyeRollingView: View {
     private func updateExercise() {
         if remainingTime > 0 {
             remainingTime -= 1
-            if remainingTime == 60 {
+            if remainingTime == 20 {
                 currentPattern = .infinity
                 speakInstruction("Changing to infinity pattern")
-            } else if remainingTime == 30 {
-                currentPattern = .octagonal
-                speakInstruction("Changing to octagonal pattern")
             }
             
-            if remainingTime == 75 || remainingTime == 45 || remainingTime == 15 {
+            if remainingTime == 30 || remainingTime == 10 {
                 currentDirection = "Counterclockwise"
                 speakInstruction("Change direction")
             }
@@ -325,7 +314,7 @@ struct EyeRollingView: View {
             
         case .infinity:
             let width: CGFloat = 200
-            let height: CGFloat = 80
+            let _: CGFloat = 80
             let normalizedT = t.truncatingRemainder(dividingBy: 2 * .pi) / (2 * .pi)
             let a = width / 2
             let angle = normalizedT * 2 * .pi
@@ -335,15 +324,6 @@ struct EyeRollingView: View {
                 x: a * cos(angle) / denominator,
                 y: a * sin(angle) * cos(angle) / denominator
             )
-            
-        case .octagonal:
-            let points = (0..<8).map { i -> CGPoint in
-                let angle = Double(i) * .pi / 4
-                return CGPoint(
-                    x: cos(angle) * radius,
-                    y: sin(angle) * radius
-                )
-            }
             
         }
         
@@ -363,11 +343,6 @@ struct EyeRollingView: View {
         case .infinity:
             return Path { path in
                 
-                
-            }
-        case .octagonal:
-            return Path { path in
-                
             }
         }
     }
@@ -376,7 +351,6 @@ struct EyeRollingView: View {
         switch currentPattern {
         case .circular: return 0
         case .infinity: return 1
-        case .octagonal: return 2
         }
     }
 }

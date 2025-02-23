@@ -2,7 +2,7 @@
 //  File.swift
 //  Eye Care App
 //
-//  Created by Akhlak iSDP on 22/02/25.
+//  Created by Akhlak iSDP on 10/02/25.
 //
 
 import Foundation
@@ -145,7 +145,6 @@ struct ZigZagExerciseView: View {
                             .position(calculateDotPosition(in: geometry.size))
                     }
                     .frame(height: 200)
-                    .padding()
                     
                     Text(currentDirection)
                         .font(.title3)
@@ -176,9 +175,10 @@ struct ZigZagExerciseView: View {
                             .background(Color.red)
                             .cornerRadius(15)
                     }
-                    .padding(.horizontal)
-                    .padding(.bottom, 30)
+                    
+                    .padding(.vertical, 8)
                 }
+                
             }
         }
         .onAppear {

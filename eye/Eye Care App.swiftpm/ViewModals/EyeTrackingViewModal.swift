@@ -5,6 +5,7 @@
 //  Created by Akhlak iSDP on 10/02/25.
 //
 
+
 import Foundation
 import SwiftUI 
 import AVFoundation
@@ -128,7 +129,7 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
         if eyeStrainDetected {
             logSymptom(
                 type: "Eye Strain",
-                intensity: 40,
+                intensity: 75,
                 trigger: "Exercise Session"
             )
         }

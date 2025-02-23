@@ -2,7 +2,7 @@
 //  File.swift
 //  Eye Care App
 //
-//  Created by Akhlak iSDP on 22/02/25.
+//  Created by Akhlak iSDP on 10/02/25.
 //
 
 import Foundation
@@ -13,7 +13,7 @@ import ARKit
 struct EyeGame: Identifiable {
     let id = UUID()
     let title: String
-    let image: String // Name of the image asset
+    let image: String
     let description: String
     let destination: AnyView
 }
@@ -27,12 +27,7 @@ class EyeGamesViewModel: ObservableObject {
             description: "Find the different colored square",
             destination: AnyView(OddColorGameView())
         ),
-        EyeGame(
-            title: "Brick Breaker Ball",
-            image: "brickbreaker",
-            description: "Break the bricks with the ball",
-            destination: AnyView(BrickBreakerGameView())
-        ),
+        
         EyeGame(
             title: "Illusion Effects & Fun",
             image: "illusioneffect",

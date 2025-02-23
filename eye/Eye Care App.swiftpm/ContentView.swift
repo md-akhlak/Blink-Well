@@ -296,14 +296,9 @@ struct ExerciseTabView: View {
             description: "Move eyes in different directions"
         ),
         ExerciseItem(
-            name: "Zig-Zag",
-            imageName: "zigzag",
-            description: "Follow zig-zag pattern"
-        ),
-        ExerciseItem(
-            name: "Flower Effect",
-            imageName: "flower",
-            description: "Focus on expanding pattern"
+            name: "Eye Massage",
+            imageName: "eyemassage",
+            description: "Gentle eye area massage"
         ),
         ExerciseItem(
             name: "Focusing",
@@ -311,14 +306,19 @@ struct ExerciseTabView: View {
             description: "Focus shifting exercise"
         ),
         ExerciseItem(
+            name: "Zig-Zag",
+            imageName: "zigzag",
+            description: "Follow zig-zag pattern"
+        ),
+        ExerciseItem(
             name: "Star in Sky",
             imageName: "star",
             description: "Focus on distant point"
         ),
         ExerciseItem(
-            name: "Eye Massage",
-            imageName: "eyemassage",
-            description: "Gentle eye area massage"
+            name: "Flower Effect",
+            imageName: "flower",
+            description: "Focus on expanding pattern"
         )
     ]
     

@@ -2,7 +2,7 @@
 //  File.swift
 //  Eye Care App
 //
-//  Created by Akhlak iSDP on 22/02/25.
+//  Created by Akhlak iSDP on 10/02/25.
 //
 
 import Foundation
@@ -55,9 +55,7 @@ struct BlinkingGuideView: View {
                                 .foregroundColor(.secondary)
                         }
                     }
-                    .padding(.vertical, 8)
                 }
-                
                 CardView(icon: "checkmark.circle.fill", iconColor: .green, title: "Benefits") {
                     VStack(alignment: .leading, spacing: 8) {
                         BenefitRow(text: "Reduces digital eye strain")
@@ -67,7 +65,7 @@ struct BlinkingGuideView: View {
                     }
                 }
             }
-            .padding()
+            .padding(.vertical, 8)
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Blinking")
@@ -341,7 +339,7 @@ struct EyeShape: View {
                 ZStack {
                     Capsule()
                         .fill(Color.white)
-                        .frame(width: 5, height: 30)
+                        .frame(width: 20, height: 30)
                         .shadow(color: .black.opacity(0.1), radius: 2, y: 2)
                     
                     Circle()

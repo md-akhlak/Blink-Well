@@ -2,7 +2,7 @@
 //  File.swift
 //  Eye Care App
 //
-//  Created by Akhlak iSDP on 22/02/25.
+//  Created by Akhlak iSDP on 10/02/25.
 //
 
 import Foundation
@@ -175,5 +175,94 @@ struct ExerciseContentView: View {
         let minutes = Int(timeInterval) / 60
         let seconds = Int(timeInterval) % 60
         return String(format: "%02d:%02d", minutes, seconds)
+    }
+}
+
+
+
+struct SessionCard: View {
+    let session: ExerciseSession
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(formatDate(session.date))
+                    .font(.headline)
+                Spacer()
+                Text(formatDuration(session.duration))
+                    .foregroundColor(.secondary)
+            }
+            
+            HStack(spacing: 20) {
+                StatItem(
+                    icon: "eye",
+                    count: session.blinkCount,
+                    label: "Blinks",
+                    color: .blue
+                )
+                
+                StatItem(
+                    icon: "waveform.path.ecg",
+                    count: session.twitchCount,
+                    label: "Twitches",
+                    color: .orange
+                )
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white)
+                .shadow(
+                    color: Color.black.opacity(0.08),
+                    radius: 8,
+                    x: 0,
+                    y: 4
+                )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.gray.opacity(0.1), lineWidth: 1)
+        )
+        .padding(.horizontal, 4)
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
+    }
+    
+    private func formatDuration(_ duration: TimeInterval) -> String {
+        let minutes = Int(duration) / 60
+        let seconds = Int(duration) % 60
+        return String(format: "%d:%02d", minutes, seconds)
+    }
+}
+
+struct StatItem: View {
+    let icon: String
+    let count: Int
+    let label: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 4) {
+            HStack(spacing: 6) {
+                Image(systemName: icon)
+                    .foregroundColor(color)
+                Text("\(count)")
+                    .font(.system(.body, design: .rounded))
+                    .bold()
+            }
+            Text(label)
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding(.vertical, 8)
+        .padding(.horizontal, 12)
+        .background(color.opacity(0.1))
+        .cornerRadius(8)
     }
 }

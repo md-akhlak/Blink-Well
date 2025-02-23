@@ -2,7 +2,7 @@
 //  File.swift
 //  Eye Care App
 //
-//  Created by Akhlak iSDP on 22/02/25.
+//  Created by Akhlak iSDP on 10/02/25.
 //
 
 import Foundation
@@ -335,7 +335,7 @@ struct PalmingGuideView: View {
                     }
                 }
             }
-            .padding()
+            .padding(.vertical, 8)
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Palming")
