@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "motion-aftereffect-peripheral-drift-illusion-fraser-spiral-illusion-optical-illusion-illusion-optics-coloring-book-video-video-game-symmetry.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
