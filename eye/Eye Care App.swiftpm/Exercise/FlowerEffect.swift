@@ -62,7 +62,7 @@ struct FlowerEffectGuideView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(Color.accentBlue)
                     .cornerRadius(16)
                     .padding(.horizontal)
                     .background(.ultraThinMaterial)
@@ -96,7 +96,7 @@ struct FlowerEffectView: View {
                         Text(timeString(from: remainingTime))
                             .font(.system(size: 60, weight: .bold))
                             .monospacedDigit()
-                            .foregroundColor(.blue)
+                            .foregroundColor(.accentBlue)
                         
                         Text("Remaining Time")
                             .font(.title3)
@@ -104,7 +104,7 @@ struct FlowerEffectView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 20)
-                    .background(Color.blue.opacity(0.1))
+                    .background(Color.accentBlue.opacity(0.1))
                     .cornerRadius(20)
                     .padding(.horizontal)
                     
@@ -112,7 +112,7 @@ struct FlowerEffectView: View {
                         Circle()
                             .fill(
                                 RadialGradient(
-                                    gradient: Gradient(colors: [.blue.opacity(0.2), .clear]),
+                                    gradient: Gradient(colors: [.accentBlue.opacity(0.2), .clear]),
                                     center: .center,
                                     startRadius: 50,
                                     endRadius: 150
@@ -126,7 +126,7 @@ struct FlowerEffectView: View {
                             PetalShape()
                                 .fill(
                                     LinearGradient(
-                                        gradient: Gradient(colors: [.blue, .purple]),
+                                        gradient: Gradient(colors: [.accentBlue, .purple]),
                                         startPoint: .leading,
                                         endPoint: .trailing
                                     )
@@ -140,7 +140,7 @@ struct FlowerEffectView: View {
                         Circle()
                             .fill(
                                 RadialGradient(
-                                    gradient: Gradient(colors: [.white, .blue]),
+                                    gradient: Gradient(colors: [.white, .accentBlue]),
                                     center: .center,
                                     startRadius: 0,
                                     endRadius: 15
@@ -153,7 +153,7 @@ struct FlowerEffectView: View {
                     
                     Text(currentPhase)
                         .font(.title2.bold())
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accentBlue)
                     
                     Spacer()
 
@@ -166,7 +166,7 @@ struct FlowerEffectView: View {
                     }
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(Color.blue.opacity(0.1))
+                    .background(Color.accentBlue.opacity(0.1))
                     .cornerRadius(12)
                     .padding(.horizontal)
                 }

@@ -61,7 +61,7 @@ struct EyeMassageGuideView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.blue)
+                        .background(Color.accentBlue)
                         .cornerRadius(16)
                         .padding(.horizontal)
                         .background(.ultraThinMaterial)
@@ -102,7 +102,7 @@ struct EyeMassageView: View {
                         Text(timeString(from: remainingTime))
                             .font(.system(size: 60, weight: .bold))
                             .monospacedDigit()
-                            .foregroundColor(.blue)
+                            .foregroundColor(.accentBlue)
                         
                         Text("Remaining Time")
                             .font(.title3)
@@ -110,13 +110,13 @@ struct EyeMassageView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 20)
-                    .background(Color.blue.opacity(0.1))
+                    .background(Color.accentBlue.opacity(0.1))
                     .cornerRadius(20)
                     .padding(.horizontal)
                     
                     ZStack {
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(Color.blue.opacity(0.1))
+                            .fill(Color.accentBlue.opacity(0.1))
                             .frame(height: 300)
                         
                         ZStack {
@@ -133,7 +133,7 @@ struct EyeMassageView: View {
                     HStack(spacing: 8) {
                         ForEach(0..<massageSteps.count) { index in
                             Circle()
-                                .fill(currentStep == index ? Color.blue : Color.gray.opacity(0.3))
+                                .fill(currentStep == index ? Color.accentBlue : Color.gray.opacity(0.3))
                                 .frame(width: 8, height: 8)
                         }
                     }

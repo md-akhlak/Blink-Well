@@ -28,59 +28,56 @@ struct EyeRollingGuideView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        NavigationStack{
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    CardView(icon: "info.circle.fill", title: "Instructions") {
-                        VStack(alignment: .leading, spacing: 8) {
-                            InstructionRow(number: 1, text: "Keep your head still throughout the exercise")
-                            InstructionRow(number: 3, text: "Follow the moving dot only with your eyes")
-                            InstructionRow(number: 3, text: "Blink naturally when needed")
-                        }
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                CardView(icon: "info.circle.fill", title: "Instructions") {
+                    VStack(alignment: .leading, spacing: 8) {
+                        InstructionRow(number: 1, text: "Keep your head still throughout the exercise")
+                        InstructionRow(number: 3, text: "Follow the moving dot only with your eyes")
+                        InstructionRow(number: 3, text: "Blink naturally when needed")
                     }
-                    CardView(icon: "eyes", title: "Exercise Patterns") {
-                        VStack(spacing: 20) {
-                            PatternRow(
-                                title: "Circular",
-                                description: "Smooth circular movement",
-                                duration: "20 seconds"
-                            )
-                            
-                            PatternRow(
-                                title: "Figure Eight",
-                                description: "Flowing infinity pattern",
-                                duration: "20 seconds"
-                            )
-                        }
-                    }
-                    
-                    CardView(icon: "checkmark.circle.fill", iconColor: .green, title: "Benefits") {
-                        VStack(alignment: .leading, spacing: 8) {
-                            BenefitRow(text: "Strengthens eye muscles")
-                            BenefitRow(text: "Improves eye coordination")
-                            BenefitRow(text: "Reduces eye strain")
-                            BenefitRow(text: "Enhances focus flexibility")
-                        }
-                    }
-                    .padding(.vertical, 8)
                 }
-                .background(Color(.systemGroupedBackground))
-                .navigationTitle("Eye Moves")
-                .navigationBarTitleDisplayMode(.large)
+                CardView(icon: "eyes", title: "Exercise Patterns") {
+                    VStack(spacing: 20) {
+                        PatternRow(
+                            title: "Circular",
+                            description: "Smooth circular movement",
+                            duration: "20 seconds"
+                        )
+                        
+                        PatternRow(
+                            title: "Figure Eight",
+                            description: "Flowing infinity pattern",
+                            duration: "20 seconds"
+                        )
+                    }
+                }
                 
-            }
-            .safeAreaInset(edge: .bottom) {
-                Button(action: { showExercise = true }) {
-                    Text("Start Exercise")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(16)
-                        .padding(.horizontal)
-                        .background(.ultraThinMaterial)
+                CardView(icon: "checkmark.circle.fill", iconColor: .green, title: "Benefits") {
+                    VStack(alignment: .leading, spacing: 8) {
+                        BenefitRow(text: "Strengthens eye muscles")
+                        BenefitRow(text: "Improves eye coordination")
+                        BenefitRow(text: "Reduces eye strain")
+                        BenefitRow(text: "Enhances focus flexibility")
+                    }
                 }
+            }
+            .padding(.vertical, 8)
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle("Eye Moves")
+        .navigationBarTitleDisplayMode(.large)
+        .safeAreaInset(edge: .bottom) {
+            Button(action: { showExercise = true }) {
+                Text("Start Exercise")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.accentBlue)
+                    .cornerRadius(16)
+                    .padding(.horizontal)
+                    .background(.ultraThinMaterial)
             }
         }
         .fullScreenCover(isPresented: $showExercise) {
@@ -110,7 +107,7 @@ struct PatternRow: View {
             Text(duration)
                 .font(.caption)
                 .padding(8)
-                .background(Color.blue.opacity(0.1))
+                .background(Color.accentBlue.opacity(0.1))
                 .clipShape(Capsule())
         }
     }
@@ -148,18 +145,18 @@ struct EyeRollingView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 20)
-                        .background(Color.blue.opacity(0.1))
+                        .background(Color.accentBlue.opacity(0.1))
                         .cornerRadius(20)
                         .padding(.horizontal)
                         
                         VStack(spacing: 8) {
                             Text(currentPattern.name)
                                 .font(.title2.bold())
-                                .foregroundColor(.blue)
+                                .foregroundColor(.accentBlue)
                             
                             Text(currentDirection)
                                 .font(.title3)
-                                .foregroundColor(.blue.opacity(0.8))
+                                .foregroundColor(.accentBlue.opacity(0.8))
                         }
                         
                         ZStack {
@@ -193,7 +190,7 @@ struct EyeRollingView: View {
                             }
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.blue.opacity(0.1))
+                            .background(Color.accentBlue.opacity(0.1))
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             
                             Button(action: { stopExercise() }) {
@@ -212,7 +209,7 @@ struct EyeRollingView: View {
                             HStack(spacing: 8) {
                                 ForEach(0..<3) { index in
                                     Circle()
-                                        .fill(getCurrentPatternIndex() == index ? Color.blue : Color.gray.opacity(0.3))
+                                        .fill(getCurrentPatternIndex() == index ? Color.accentBlue : Color.gray.opacity(0.3))
                                         .frame(width: 8, height: 8)
                                 }
                             
@@ -233,7 +230,7 @@ struct EyeRollingView: View {
                             Image(systemName: "chevron.left")
                             Text("Back")
                         }
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accentBlue)
                     }
                 }
             }

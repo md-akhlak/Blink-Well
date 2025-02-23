@@ -12,11 +12,10 @@ import ARKit
 
 struct BlinkingGuideView: View {
     @State private var showExercise = false
-    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                CardView(icon: "eye.fill", title: "Instructions") {
+                CardView(icon: "info.circle.fill", title: "Instructions") {
                     VStack(alignment: .leading, spacing: 8) {
                         InstructionRow(number: 1, text: "Blink naturally for 20 seconds")
                         InstructionRow(number: 3, text: "Perform quick blinks for 20 seconds")
@@ -77,7 +76,7 @@ struct BlinkingGuideView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(Color.accentBlue)
                     .cornerRadius(16)
                     .padding(.horizontal)
                     .background(.ultraThinMaterial)
@@ -131,7 +130,7 @@ struct EyeBlinkingView: View {
                         Text(timeString(from: remainingTime))
                             .font(.system(size: 60, weight: .bold))
                             .monospacedDigit()
-                            .foregroundColor(.blue)
+                            .foregroundColor(.accentBlue)
                         
                         Text("Remaining Time")
                             .font(.title3)
@@ -139,12 +138,12 @@ struct EyeBlinkingView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 20)
-                    .background(Color.blue.opacity(0.1))
+                    .background(Color.accentBlue.opacity(0.1))
                     .cornerRadius(20)
                     
                     ZStack {
                         Circle()
-                            .fill(Color.blue.opacity(0.1))
+                            .fill(Color.accentBlue.opacity(0.1))
                             .frame(width: geometry.size.width * 0.8)
                         
                         HStack(spacing: geometry.size.width * 0.15) {
@@ -159,7 +158,7 @@ struct EyeBlinkingView: View {
                     VStack(spacing: 12) {
                         Text(currentPhase.rawValue)
                             .font(.title2.bold())
-                            .foregroundColor(.blue)
+                            .foregroundColor(.accentBlue)
                         
                         Text(eyesOpen ? "Open your eyes" : "Close your eyes")
                             .font(.title3)
@@ -173,7 +172,7 @@ struct EyeBlinkingView: View {
                             .padding(.horizontal)
                     }
                     .padding()
-                    .background(Color.blue.opacity(0.1))
+                    .background(Color.accentBlue.opacity(0.1))
                     .cornerRadius(16)
                     
                     Spacer()

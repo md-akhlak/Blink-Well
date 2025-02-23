@@ -10,6 +10,8 @@ import SwiftUI
 import AVFoundation
 import ARKit
 
+
+
 struct ExerciseContentView: View {
     @ObservedObject var viewModel: EyeTrackingViewModel
     @Binding var targetPosition: CGPoint
@@ -19,7 +21,7 @@ struct ExerciseContentView: View {
     @State private var currentPattern: GazePattern = .square
     @State private var patternProgress: Double = 0
     
-    private let animationSpeed: Double = 0.0020
+    private let animationSpeed: Double = 0.0010
     
     var body: some View {
             ScrollView(showsIndicators: false){
@@ -33,7 +35,7 @@ struct ExerciseContentView: View {
                             VStack {
                                 HStack {
                                     Image(systemName: "eye")
-                                        .foregroundColor(.blue)
+                                        .foregroundColor(.accentBlue)
                                     Text("\(viewModel.exerciseBlinkCount)")
                                         .font(.system(size: 24, weight: .bold))
                                 }
@@ -42,12 +44,12 @@ struct ExerciseContentView: View {
                                     .foregroundColor(.secondary)
                             }
                             .padding()
-                            .background(Color.blue.opacity(0.1))
+                            .background(Color.accentBlue.opacity(0.1))
                             .cornerRadius(12)
                             
                             VStack {
                                 HStack {
-                                    Image(systemName: "waveform.path.ecg")
+                                    Image(systemName: "eye.trianglebadge.exclamationmark")
                                         .foregroundColor(.orange)
                                     Text("\(viewModel.exerciseTwitchCount)")
                                         .font(.system(size: 24, weight: .bold))
@@ -74,20 +76,20 @@ struct ExerciseContentView: View {
                         
                         ZStack {
                             PatternGuideView(pattern: currentPattern)
-                                .stroke(Color.blue.opacity(0.2), lineWidth: 2)
+                                .stroke(Color.accentBlue.opacity(0.2), lineWidth: 2)
                                 .frame(width: min(geometry.size.width - 40, 300), height: min(geometry.size.width - 40, 300))
                             
                             TimelineView(.animation(minimumInterval: 0.001, paused: !isAnimating)) { timeline in
                                 
                                 Circle()
                                     .fill(RadialGradient(
-                                        gradient: Gradient(colors: [.white, .blue]),
+                                        gradient: Gradient(colors: [.white, .accentBlue]),
                                         center: .center,
                                         startRadius: 0,
                                         endRadius: 15
                                     ))
                                     .frame(width: 30, height: 30)
-                                    .shadow(color: .blue.opacity(0.5), radius: 10)
+                                    .shadow(color: .accentBlue.opacity(0.5), radius: 10)
                                     .position(calculateOrbPosition(in: CGSize(
                                         width: min(geometry.size.width - 40, 300),
                                         height: min(geometry.size.width - 40, 300)
@@ -178,8 +180,6 @@ struct ExerciseContentView: View {
     }
 }
 
-
-
 struct SessionCard: View {
     let session: ExerciseSession
     
@@ -188,6 +188,7 @@ struct SessionCard: View {
             HStack {
                 Text(formatDate(session.date))
                     .font(.headline)
+                    .foregroundColor(Color.accentBlue)
                 Spacer()
                 Text(formatDuration(session.duration))
                     .foregroundColor(.secondary)
@@ -198,14 +199,14 @@ struct SessionCard: View {
                     icon: "eye",
                     count: session.blinkCount,
                     label: "Blinks",
-                    color: .blue
+                    color: .accentBlue
                 )
                 
                 StatItem(
-                    icon: "waveform.path.ecg",
+                    icon: "eye.trianglebadge.exclamationmark.fill",
                     count: session.twitchCount,
                     label: "Twitches",
-                    color: .orange
+                    color: .accentBlue.opacity(0.8)
                 )
             }
         }
@@ -214,7 +215,7 @@ struct SessionCard: View {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color.white)
                 .shadow(
-                    color: Color.black.opacity(0.08),
+                    color: Color.accentBlue.opacity(0.08),
                     radius: 8,
                     x: 0,
                     y: 4
@@ -222,7 +223,7 @@ struct SessionCard: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray.opacity(0.1), lineWidth: 1)
+                .stroke(Color.accentBlue.opacity(0.1), lineWidth: 1)
         )
         .padding(.horizontal, 4)
     }
@@ -255,6 +256,7 @@ struct StatItem: View {
                 Text("\(count)")
                     .font(.system(.body, design: .rounded))
                     .bold()
+                    .foregroundColor(color)
             }
             Text(label)
                 .font(.caption)

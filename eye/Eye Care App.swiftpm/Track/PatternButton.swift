@@ -25,7 +25,7 @@ struct PatternButton: View {
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .background(isSelected ? Color.blue.opacity(0.2) : Color.clear)
+            .background(isSelected ? Color.accentBlue.opacity(0.2) : Color.clear)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .foregroundColor(isSelected ? .blue : .primary)

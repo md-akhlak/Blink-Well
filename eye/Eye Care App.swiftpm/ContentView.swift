@@ -23,8 +23,8 @@ struct ContentView: View {
             if showingSplash {
                 SplashScreenView()
                     .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            withAnimation(.easeOut(duration: 0.5)) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                            withAnimation(.easeOut(duration: 0.6)) {
                                 showingSplash = false
                             }
                         }
@@ -68,7 +68,7 @@ struct MainTabView: View {
                     Label("Games", systemImage: "gamecontroller")
                 }
         }
-        .tint(.blue)
+        .tint(.accentBlue)
     }
 }
 
@@ -109,13 +109,13 @@ struct StatisticsSection: View {
                     title: "Blinks",
                     value: viewModel.dailyBlinkCount,
                     icon: "eye.fill",
-                    color: .blue
+                    color: .accentBlue
                 )
                 
                 StatisticCard(
                     title: "Twitches",
                     value: viewModel.dailyTwitchCount,
-                    icon: "exclamationmark.triangle.fill",
+                    icon: "eye.trianglebadge.exclamationmark",
                     color: .orange
                 )
             }
@@ -169,11 +169,12 @@ struct StartExerciseButton: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
             .background(
-                LinearGradient(colors: [.blue, .blue.opacity(0.8)],
+                LinearGradient(colors: [.accentBlue, .accentBlue.opacity(0.8)],
                              startPoint: .leading,
                              endPoint: .trailing)
             )
             .clipShape(RoundedRectangle(cornerRadius: 16))
+            
         }
         .padding(.horizontal)
     }
@@ -258,7 +259,7 @@ struct SessionRow: View {
             VStack(alignment: .trailing, spacing: 4) {
                 Text("\(session.blinkCount) blinks")
                     .font(.subheadline)
-                    .foregroundColor(.blue)
+                    .foregroundColor(.accentBlue)
                 
                 Text("\(session.twitchCount) twitches")
                     .font(.caption)
@@ -373,7 +374,6 @@ struct SplashScreenView: View {
         ZStack {
             LinearGradient(
                 colors: [
-                    Color(red: 200/255, green: 250/255, blue: 200/255),
                     Color(red: 144/255, green: 190/255, blue: 200/255)
 
                 ],
@@ -387,17 +387,10 @@ struct SplashScreenView: View {
                     Image(systemName: "eye.fill")
                         .font(.system(size: 60))
                         .foregroundColor(.white)
-                        
-                    
                     Text("Blink Care")
                         .font(.system(size: 32, weight: .semibold))
                         .foregroundColor(.white)
                 }
-                
-                Text("Your Eye Wellness Companion")
-                    .font(.system(size: 22, weight: .medium))
-                    .foregroundColor(.white.opacity(0.9))
-                    .padding(.vertical)
             }
         }
     }

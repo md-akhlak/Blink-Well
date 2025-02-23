@@ -46,7 +46,7 @@ struct EyePalmingView: View {
                         Text(timeString(from: remainingTime))
                             .font(.system(size: 60, weight: .bold))
                             .monospacedDigit()
-                            .foregroundColor(.blue)
+                            .foregroundColor(.accentBlue)
                         
                         Text("Remaining Time")
                             .font(.title3)
@@ -54,7 +54,7 @@ struct EyePalmingView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 20)
-                    .background(Color.blue.opacity(0.1))
+                    .background(Color.accentBlue.opacity(0.1))
                     .cornerRadius(20)
                     
                     ZStack {
@@ -164,7 +164,7 @@ struct EyePalmingView: View {
                     Text(currentPhase.instruction)
                         .font(.title2)
                         .bold()
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accentBlue)
                         .multilineTextAlignment(.center)
                         .padding()
                         .animation(.easeInOut, value: currentPhase)
@@ -260,7 +260,7 @@ struct ExerciseView: View {
 struct WarningView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
-            Image(systemName: "exclamationmark.triangle.fill")
+            Image(systemName: "eye.trianglebadge.exclamationmark")
                 .foregroundColor(.red)
             
             Text("Do not press eyes while keeping palm on eyes and face")
@@ -347,7 +347,7 @@ struct PalmingGuideView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(Color.accentBlue)
                     .cornerRadius(16)
                     .padding(.horizontal)
                     .background(.ultraThinMaterial)

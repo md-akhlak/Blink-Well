@@ -60,7 +60,7 @@ struct ZigZagGuideView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(Color.accentBlue)
                     .cornerRadius(16)
                     .padding(.horizontal)
                     .background(.ultraThinMaterial)
@@ -104,7 +104,7 @@ struct ZigZagExerciseView: View {
                         Text(timeString(from: remainingTime))
                             .font(.system(size: 60, weight: .bold))
                             .monospacedDigit()
-                            .foregroundColor(.blue)
+                            .foregroundColor(.accentBlue)
                         
                         Text("Remaining Time")
                             .font(.title3)
@@ -112,7 +112,7 @@ struct ZigZagExerciseView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 20)
-                    .background(Color.blue.opacity(0.1))
+                    .background(Color.accentBlue.opacity(0.1))
                     .cornerRadius(20)
                     .padding(.horizontal)
                     
@@ -129,26 +129,26 @@ struct ZigZagExerciseView: View {
                                 path.addLine(to: CGPoint(x: xPos, y: yPos))
                             }
                         }
-                        .stroke(Color.blue.opacity(0.3), style: StrokeStyle(lineWidth: 2, dash: [5]))
+                        .stroke(Color.accentBlue.opacity(0.3), style: StrokeStyle(lineWidth: 2, dash: [5]))
                         
                         Circle()
                             .fill(
                                 RadialGradient(
-                                    gradient: Gradient(colors: [.white, .blue]),
+                                    gradient: Gradient(colors: [.white, .accentBlue]),
                                     center: .center,
                                     startRadius: 0,
                                     endRadius: 10
                                 )
                             )
                             .frame(width: 20, height: 20)
-                            .shadow(color: .blue.opacity(0.5), radius: 5)
+                            .shadow(color: .accentBlue.opacity(0.5), radius: 5)
                             .position(calculateDotPosition(in: geometry.size))
                     }
                     .frame(height: 200)
                     
                     Text(currentDirection)
                         .font(.title3)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accentBlue)
                         .padding(.vertical)
                     
                     Spacer()
@@ -162,7 +162,7 @@ struct ZigZagExerciseView: View {
                     }
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(Color.blue.opacity(0.1))
+                    .background(Color.accentBlue.opacity(0.1))
                     .cornerRadius(12)
                     .padding(.horizontal)
                     

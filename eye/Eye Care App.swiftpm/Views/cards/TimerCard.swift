@@ -16,12 +16,12 @@ struct TimeCard: View {
     var body: some View {
         VStack(spacing: 12) {
             Circle()
-                .fill(isSelected ? Color.blue : Color.blue.opacity(0.1))
+                .fill(isSelected ? Color.accentBlue : Color.accentBlue.opacity(0.1))
                 .frame(width: 56, height: 56)
                 .overlay {
                     Image(systemName: getDurationIcon())
                         .font(.title2)
-                        .foregroundStyle(isSelected ? .white : .blue)
+                        .foregroundStyle(isSelected ? .white : .accentBlue)
                 }
             
             Text(getDurationTitle())
@@ -36,14 +36,14 @@ struct TimeCard: View {
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color(.systemBackground))
-                .shadow(color: isSelected ? .blue.opacity(0.3) : .black.opacity(0.05),
+                .shadow(color: isSelected ? .accentBlue.opacity(0.3) : .black.opacity(0.05),
                        radius: isSelected ? 8 : 4,
                        x: 0,
                        y: isSelected ? 4 : 2)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 2)
+                .stroke(isSelected ? Color.accentBlue : Color.clear, lineWidth: 2)
         )
         .animation(.spring(dampingFraction: 0.7), value: isSelected)
     }

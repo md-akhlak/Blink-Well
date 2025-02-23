@@ -20,7 +20,7 @@ struct TipView: View {
                 .font(.system(size: 24))
                 .foregroundStyle(.blue)
                 .frame(width: 40, height: 40)
-                .background(Color.blue.opacity(0.1))
+                .background(Color.accentBlue.opacity(0.1))
                 .clipShape(Circle())
             
             VStack(alignment: .leading, spacing: 2) {
@@ -36,7 +36,7 @@ struct TipView: View {
             Spacer()
         }
         .padding()
-        .background(Color.blue.opacity(0.05))
+        .background(Color.accentBlue.opacity(0.05))
         .clipShape(RoundedRectangle(cornerRadius: 15))
     }
 }

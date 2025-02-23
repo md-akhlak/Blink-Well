@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct IllusionEffectsView: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var currentIllusion = 0
-    @State private var isAnimating = false
     
     let illusionTitles = [
         "Rotating Circles",
@@ -29,73 +29,71 @@ struct IllusionEffectsView: View {
     ]
     
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 0) {
+            // Header with illusion title
             Text(illusionTitles[currentIllusion])
-                .font(.title.bold())
-                .padding(.top, 20)
+                .font(.title2.bold())
+                .padding(.vertical, 16)
+                .frame(maxWidth: .infinity)
+                .background(Color(.systemBackground))
             
+            // Main illusion container
             ZStack {
                 switch currentIllusion {
-                case 0:
-                    RotatingCirclesIllusion(isAnimating: isAnimating)
-                case 1:
-                    ColorContrastIllusion(isAnimating: isAnimating)
-                case 2:
-                    MovingLinesIllusion(isAnimating: isAnimating)
-                case 3:
-                    SpiralEffectIllusion(isAnimating: isAnimating)
-                case 4:
-                    PatternShiftIllusion(isAnimating: isAnimating)
-                default:
-                    EmptyView()
+                case 0: RotatingCirclesIllusion(isAnimating: true)
+                case 1: ColorContrastIllusion(isAnimating: true)
+                case 2: MovingLinesIllusion(isAnimating: true)
+                case 3: SpiralEffectIllusion(isAnimating: true)
+                case 4: PatternShiftIllusion(isAnimating: true)
+                default: EmptyView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: 400)
-            .background(Color(.systemBackground))
-            .cornerRadius(20)
-            .shadow(radius: 10)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color(.systemBackground))
+                    .shadow(radius: 8)
+            )
             .padding(.horizontal, 20)
+            .padding(.vertical, 24)
             
-            Text(illusionDescriptions[currentIllusion])
-                .font(.subheadline)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-                .padding(.horizontal, 20)
-            
-            HStack(spacing: 30) {
-                Button(action: previousIllusion) {
-                    Image(systemName: "chevron.left")
-                        .font(.title2)
-                        .padding()
-                        .background(Color.blue.opacity(0.2))
-                        .clipShape(Circle())
-                }
-                .disabled(currentIllusion == 0)
+            // Description and controls
+            VStack(spacing: 24) {
+                Text(illusionDescriptions[currentIllusion])
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal, 20)
                 
-                Button(action: nextIllusion) {
-                    Image(systemName: "chevron.right")
-                        .font(.title2)
-                        .padding()
-                        .background(Color.blue.opacity(0.2))
-                        .clipShape(Circle())
+                // Navigation controls
+                HStack(spacing: 40) {
+                    NavigationButton(
+                        icon: "chevron.left",
+                        action: previousIllusion,
+                        isDisabled: currentIllusion == 0
+                    )
+                    
+                    NavigationButton(
+                        icon: "chevron.right",
+                        action: nextIllusion,
+                        isDisabled: currentIllusion == illusionTitles.count - 1
+                    )
                 }
-                .disabled(currentIllusion == illusionTitles.count - 1)
             }
-            .padding(.vertical, 10)
+            .padding(.bottom, 32)
             
-            Toggle("Animate", isOn: $isAnimating)
-                .padding()
-                .frame(maxWidth: 300)
-                .background(Color(.systemBackground))
-                .cornerRadius(10)
-                .shadow(radius: 5)
-                .padding(.bottom, 20)
+            Spacer()
         }
-        .navigationTitle("Optical Illusions")
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
-        .background(Color(.systemGroupedBackground))
-        .onAppear {
-            isAnimating = true
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { dismiss() }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.gray)
+                        .font(.title3)
+                }
+            }
         }
     }
     
@@ -112,6 +110,27 @@ struct IllusionEffectsView: View {
     }
 }
 
+// Helper view for navigation buttons
+private struct NavigationButton: View {
+    let icon: String
+    let action: () -> Void
+    let isDisabled: Bool
+    
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(isDisabled ? .gray : .accentColor)
+                .padding(16)
+                .background(
+                    Circle()
+                        .fill(Color.accentColor.opacity(0.1))
+                )
+        }
+        .disabled(isDisabled)
+    }
+}
+
 // MARK: - Illusion Views
 struct RotatingCirclesIllusion: View {
     let isAnimating: Bool
@@ -119,24 +138,25 @@ struct RotatingCirclesIllusion: View {
     
     var body: some View {
         ZStack {
+            Color.black
+                .ignoresSafeArea()
+            
             Circle()
                 .fill(Color.red)
                 .frame(width: 10, height: 10)
             
             ForEach(0..<8) { index in
                 Circle()
-                    .stroke(Color.blue, lineWidth: 3)
+                    .stroke(Color.accentBlue, lineWidth: 3)
                     .frame(width: 100, height: 100)
                     .offset(x: 80)
                     .rotationEffect(.degrees(Double(index) * 45))
-                    .rotationEffect(.degrees(isAnimating ? rotation : 0))
+                    .rotationEffect(.degrees(rotation))
             }
         }
-        .onChange(of: isAnimating) { newValue in
-            withAnimation(newValue ?
-                .linear(duration: 8).repeatForever(autoreverses: false) :
-                .default) {
-                rotation = newValue ? 360 : 0
+        .onAppear {
+            withAnimation(.linear(duration: 8).repeatForever(autoreverses: false)) {
+                rotation = 360
             }
         }
     }
@@ -148,9 +168,8 @@ struct ColorContrastIllusion: View {
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .fill(Color.black)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            Color.black
+                .ignoresSafeArea()
             
             VStack(spacing: 2) {
                 ForEach(0..<8) { row in
@@ -159,28 +178,22 @@ struct ColorContrastIllusion: View {
                             Rectangle()
                                 .fill(
                                     Color(
-                                        hue: ((Double(row + col) / 16.0) + (isAnimating ? colorPhase : 0))
+                                        hue: ((Double(row + col) / 16.0) + colorPhase)
                                             .truncatingRemainder(dividingBy: 1.0),
                                         saturation: 1.0,
                                         brightness: 0.8
                                     )
                                 )
                                 .frame(width: 40, height: 40)
-                                .animation(
-                                    .linear(duration: 0.5),
-                                    value: isAnimating
-                                )
                         }
                     }
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 8))
         }
-        .onChange(of: isAnimating) { newValue in
-            withAnimation(newValue ?
-                .linear(duration: 8).repeatForever(autoreverses: false) :
-                .default) {
-                colorPhase = newValue ? 1.0 : 0.0
+        .onAppear {
+            withAnimation(.linear(duration: 8).repeatForever(autoreverses: false)) {
+                colorPhase = 1.0
             }
         }
     }
@@ -192,16 +205,15 @@ struct MovingLinesIllusion: View {
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .fill(Color.black)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            Color.black
+                .ignoresSafeArea()
             
             HStack(spacing: 0) {
                 ForEach(0..<30) { index in
                     Rectangle()
                         .fill(index % 2 == 0 ? Color.white : Color.black)
                         .frame(width: 15)
-                        .offset(x: isAnimating ? offset : 0)
+                        .offset(x: offset)
                 }
             }
             .frame(maxHeight: .infinity)
@@ -216,11 +228,9 @@ struct MovingLinesIllusion: View {
                 .fill(Color.red)
                 .frame(width: 6, height: 6)
         }
-        .onChange(of: isAnimating) { newValue in
-            withAnimation(newValue ?
-                .linear(duration: 1.5).repeatForever(autoreverses: false) :
-                .default) {
-                offset = newValue ? 15 : 0
+        .onAppear {
+            withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+                offset = 15
             }
         }
     }
@@ -232,25 +242,26 @@ struct SpiralEffectIllusion: View {
     
     var body: some View {
         ZStack {
+            Color.black
+                .ignoresSafeArea()
+            
             Circle()
                 .fill(Color.white)
                 .frame(width: 8, height: 8)
             
             ForEach(0..<36) { index in
                 Rectangle()
-                    .fill(Color.blue.opacity(0.8))
+                    .fill(Color.accentBlue.opacity(0.8))
                     .frame(width: 200, height: 2)
                     .offset(x: 100)
                     .rotationEffect(.degrees(Double(index) * 10))
                     .scaleEffect(CGFloat(index) / 36.0)
-                    .rotationEffect(.degrees(isAnimating ? rotation : 0))
+                    .rotationEffect(.degrees(rotation))
             }
         }
-        .onChange(of: isAnimating) { newValue in
-            withAnimation(newValue ?
-                .linear(duration: 6).repeatForever(autoreverses: false) :
-                .default) {
-                rotation = newValue ? 360 : 0
+        .onAppear {
+            withAnimation(.linear(duration: 6).repeatForever(autoreverses: false)) {
+                rotation = 360
             }
         }
     }
@@ -262,21 +273,22 @@ struct PatternShiftIllusion: View {
     
     var body: some View {
         ZStack {
+            Color.black
+                .ignoresSafeArea()
+            
             ForEach(0..<8) { row in
                 ForEach(0..<8) { col in
                     Circle()
-                        .fill(Color.blue.opacity(0.8))
+                        .fill(Color.accentBlue.opacity(0.8))
                         .frame(width: 30, height: 30)
-                        .offset(x: CGFloat(col) * 40 - 140 + (isAnimating && row % 2 == 0 ? offset : 0),
+                        .offset(x: CGFloat(col) * 40 - 160 + (row % 2 == 0 ? offset : 0),
                                y: CGFloat(row) * 40 - 140)
                 }
             }
         }
-        .onChange(of: isAnimating) { newValue in
-            withAnimation(newValue ?
-                .linear(duration: 1.5).repeatForever(autoreverses: true) :
-                .default) {
-                offset = newValue ? 40 : 0
+        .onAppear {
+            withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: true)) {
+                offset = 40
             }
         }
     }

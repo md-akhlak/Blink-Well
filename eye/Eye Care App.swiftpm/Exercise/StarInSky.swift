@@ -62,7 +62,7 @@ struct StarInSkyGuideView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(Color.accentBlue)
                     .cornerRadius(16)
                     .padding(.horizontal)
                     .background(.ultraThinMaterial)

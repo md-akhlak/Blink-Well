@@ -83,7 +83,7 @@ struct GameCard: View {
             
             Image(systemName: "play.circle.fill")
                 .font(.system(size: 32))
-                .foregroundColor(.blue)
+                .foregroundColor(.accentBlue)
         }
         .padding()
         .background(Color(.systemBackground))

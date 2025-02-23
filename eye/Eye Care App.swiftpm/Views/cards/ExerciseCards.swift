@@ -11,13 +11,13 @@ import SwiftUI
 
 struct CardView<Content: View>: View {
     let icon: String
-    var iconColor: Color = .blue
+    var iconColor: Color = .accentBlue
     let title: String
     let content: Content
     
     init(
         icon: String,
-        iconColor: Color = .blue,
+        iconColor: Color = .accentBlue,
         title: String,
         @ViewBuilder content: () -> Content
     ) {
