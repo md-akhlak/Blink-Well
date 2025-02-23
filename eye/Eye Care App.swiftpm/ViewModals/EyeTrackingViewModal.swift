@@ -13,19 +13,7 @@ import ARKit
 
 
 class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
-    @Published var dailyBlinkCount = 0
-    @Published var dailyTwitchCount = 0
-    @Published var exerciseBlinkCount = 0
-    @Published var exerciseTwitchCount = 0
-    @Published var exerciseSessions: [ExerciseSession] = []
-    @Published var blinkCount = 0
-    @Published var eyebrowTwitchCount = 0
-    @Published var eyeStrainDetected = false
-    @Published var isTracking = false
-    @Published var exerciseDuration: TimeInterval = 30
-    @Published var remainingTime: TimeInterval = 0
-    @Published var isExerciseActive = false
-    @Published var stressLevel: Int = 0
+    
     @Published var screenTime: TimeInterval = 0
     @Published var selectedDuration: TimeInterval = 30
     @Published var blinkLogs: [SymptomLog] = []
@@ -33,11 +21,27 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published var showEyeStrainWarning = false
     @Published var currentBlinkRate: Double = 0.0
     @Published var currentTwitchRate: Double = 0.0
+    @Published var dailyBlinkCount = 0
+    @Published var dailyTwitchCount = 0
+    @Published var exerciseBlinkCount = 0
+    @Published var exerciseTwitchCount = 0
+    @Published var exerciseSessions: [ExerciseSession] = []
+    @Published var blinkCount = 0
+    @Published var eyebrowTwitchCount = 0
+    @Published var isTracking = false
+    @Published var exerciseDuration: TimeInterval = 30
+    @Published var remainingTime: TimeInterval = 0
+    @Published var isExerciseActive = false
+    @Published var stressLevel: Int = 0
+    @Published var eyeStrainDetected = false
     
     private var lastBlinkTimestamp: Date?
     private var lastTwitchTimestamp: Date?
     private var blinkThresholdReached = false
     private var twitchThresholdReached = false
+    
+    
+
     private var blinkRateTimer: Timer?
     private var recentBlinks: [Date] = []
     private var recentTwitches: [Date] = []

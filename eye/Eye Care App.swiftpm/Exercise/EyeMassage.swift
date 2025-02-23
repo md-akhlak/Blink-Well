@@ -131,7 +131,7 @@ struct EyeMassageView: View {
                     .padding(.horizontal)
                     
                     HStack(spacing: 8) {
-                        ForEach(0..<massageSteps.count) { index in
+                        ForEach(0..<8, id: \.self) { index in
                             Circle()
                                 .fill(currentStep == index ? Color.accentBlue : Color.gray.opacity(0.3))
                                 .frame(width: 8, height: 8)

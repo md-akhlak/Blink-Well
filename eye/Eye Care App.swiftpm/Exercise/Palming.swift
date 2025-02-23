@@ -94,23 +94,7 @@ struct EyePalmingView: View {
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 250, height: 250)
                                 
-                                HStack(spacing: -10) {
-                                    Image("palm-left")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 100)
-                                        .rotationEffect(.degrees(10))
-                                        .offset(x: 15, y: -45)
-                                        .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
-                                    
-                                    Image("palm-right")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 100)
-                                        .rotationEffect(.degrees(-10))
-                                        .offset(x: -15, y: -45)
-                                        .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
-                                }
+                                
                                 .offset(y: isAnimating ? -3 : 0)
                                 .animation(
                                     .easeInOut(duration: 2)

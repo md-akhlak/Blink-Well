@@ -254,14 +254,11 @@ struct ZigZagExerciseView: View {
         return CGPoint(x: xPos, y: yPos)
     }
 
-    private func lerp(start: CGFloat, end: CGFloat, t: CGFloat) -> CGFloat {
-        return start + ((end - start) * t)
-    }
+   
     
     private func updateExercise() {
         if remainingTime > 0 {
             remainingTime -= 1
-            
             if remainingTime == 30 {
                 currentDirection = "Right to Left"
                 speakInstruction("Change direction: Right to Left")
@@ -288,5 +285,9 @@ struct ZigZagExerciseView: View {
         let minutes = Int(timeInterval) / 60
         let seconds = Int(timeInterval) % 60
         return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    private func lerp(start: CGFloat, end: CGFloat, t: CGFloat) -> CGFloat {
+        return start + ((end - start) * t)
     }
 }
