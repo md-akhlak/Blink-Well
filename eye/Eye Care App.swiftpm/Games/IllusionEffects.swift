@@ -22,12 +22,10 @@ struct IllusionEffectsView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            // Title
             Text(illusionTitles[currentIllusion])
                 .font(.title.bold())
                 .padding(.top, 20)
             
-            // Illusion View
             ZStack {
                 switch currentIllusion {
                 case 0:
@@ -50,14 +48,12 @@ struct IllusionEffectsView: View {
             .shadow(radius: 10)
             .padding(.horizontal, 20)
             
-            // Description
             Text(illusionDescriptions[currentIllusion])
                 .font(.subheadline)
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
                 .padding(.horizontal, 20)
             
-            // Navigation Buttons
             HStack(spacing: 30) {
                 Button(action: previousIllusion) {
                     Image(systemName: "chevron.left")
@@ -79,7 +75,6 @@ struct IllusionEffectsView: View {
             }
             .padding(.vertical, 10)
             
-            // Animate Toggle
             Toggle("Animate", isOn: $isAnimating)
                 .padding()
                 .frame(maxWidth: 300)
@@ -110,14 +105,12 @@ struct IllusionEffectsView: View {
 }
 
 // MARK: - Illusion Views
-
 struct RotatingCirclesIllusion: View {
     let isAnimating: Bool
     @State private var rotation = 0.0
     
     var body: some View {
         ZStack {
-            // Center marker for focus point
             Circle()
                 .fill(Color.red)
                 .frame(width: 10, height: 10)
@@ -147,12 +140,10 @@ struct ColorContrastIllusion: View {
     
     var body: some View {
         ZStack {
-            // Background grid
             Rectangle()
                 .fill(Color.black)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            // Dynamic color grid
             VStack(spacing: 2) {
                 ForEach(0..<8) { row in
                     HStack(spacing: 2) {
@@ -193,12 +184,10 @@ struct MovingLinesIllusion: View {
     
     var body: some View {
         ZStack {
-            // Background
             Rectangle()
                 .fill(Color.black)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            // Vertical lines pattern
             HStack(spacing: 0) {
                 ForEach(0..<30) { index in
                     Rectangle()
@@ -209,14 +198,12 @@ struct MovingLinesIllusion: View {
             }
             .frame(maxHeight: .infinity)
             .mask(
-                // Circular mask for better focus
                 Circle()
                     .fill(Color.white)
                     .frame(width: 300, height: 300)
                     .blur(radius: 1)
             )
             
-            // Center focus point
             Circle()
                 .fill(Color.red)
                 .frame(width: 6, height: 6)
@@ -237,7 +224,6 @@ struct SpiralEffectIllusion: View {
     
     var body: some View {
         ZStack {
-            // Center focus point
             Circle()
                 .fill(Color.white)
                 .frame(width: 8, height: 8)

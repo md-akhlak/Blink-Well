@@ -14,15 +14,11 @@ struct PatternGuideView: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
         let points = pattern.points
-        let size = rect.size
         
         guard !points.isEmpty else { return path }
         
-        // Convert normalized coordinates to view coordinates
         let viewPoints = points.map { point in
             CGPoint(
-                x: size.width * (point.x + 1) / 2,
-                y: size.height * (point.y + 1) / 2
             )
         }
         
@@ -34,3 +30,4 @@ struct PatternGuideView: Shape {
         return path
     }
 }
+

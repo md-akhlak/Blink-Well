@@ -18,7 +18,6 @@ struct FocusShiftingGuideView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                // Instructions Section
                 CardView(icon: "info.circle.fill", title: "Instructions") {
                     VStack(alignment: .leading, spacing: 12) {
                         InstructionRow(number: 1, text: "Sit in a comfortable position with good posture")
@@ -27,11 +26,9 @@ struct FocusShiftingGuideView: View {
                         InstructionRow(number: 4, text: "Blink naturally between transitions")
                     }
                 }
-                
-                // Illustration Section
                 CardView(icon: "arrow.left.and.right", title: "Exercise Pattern") {
                     VStack(spacing: 20) {
-                        Image("focusing") // Add focusing pattern image to assets
+                        Image("focusing")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 120)
@@ -43,8 +40,6 @@ struct FocusShiftingGuideView: View {
                             .multilineTextAlignment(.center)
                     }
                 }
-                
-                // Benefits Section
                 CardView(icon: "checkmark.circle.fill", iconColor: .green, title: "Benefits") {
                     VStack(alignment: .leading, spacing: 8) {
                         BenefitRow(text: "Improves focusing ability")
@@ -79,7 +74,6 @@ struct FocusShiftingGuideView: View {
 }
 
 
-// New Focus Shifting Exercise View
 struct FocusShiftingView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var remainingTime: TimeInterval = 120
@@ -91,11 +85,9 @@ struct FocusShiftingView: View {
     
     var body: some View {
         ZStack {
-            // AR View
             ARFocusView(currentFocus: $currentFocus)
             
             VStack {
-                // Timer Display
                 VStack(spacing: 8) {
                     Text(timeString(from: remainingTime))
                         .font(.system(size: 60, weight: .bold))
@@ -117,7 +109,6 @@ struct FocusShiftingView: View {
                 
                 Spacer()
                 
-                // Instructions
                 VStack(spacing: 16) {
                     Text(currentFocus == "near" ? "Focus on Near Ball (Green)" : "Focus on Far Ball (Yellow)")
                         .font(.title2.bold())
@@ -139,7 +130,6 @@ struct FocusShiftingView: View {
                 .cornerRadius(16)
                 .padding(.horizontal)
                 
-                // Stop Button
                 Button(action: { stopExercise() }) {
                     Label("End Exercise", systemImage: "xmark.circle.fill")
                         .font(.headline)
@@ -230,19 +220,16 @@ struct ARFocusView: UIViewRepresentable {
         arView.delegate = context.coordinator
         arView.session.delegate = context.coordinator
         
-        // Configure AR session
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = .horizontal
         arView.session.run(configuration)
         
-        // Add focus balls
         setupFocusBalls(in: arView)
         
         return arView
     }
     
     func updateUIView(_ uiView: ARSCNView, context: Context) {
-        // Update ball appearances based on current focus
         if let nearBall = uiView.scene.rootNode.childNode(withName: "nearBall", recursively: true),
            let farBall = uiView.scene.rootNode.childNode(withName: "farBall", recursively: true) {
             
@@ -253,7 +240,6 @@ struct ARFocusView: UIViewRepresentable {
             nearBall.geometry?.firstMaterial?.diffuse.contents = currentFocus == "near" ? nearColor : unfocusedColor
             farBall.geometry?.firstMaterial?.diffuse.contents = currentFocus == "far" ? farColor : unfocusedColor
             
-            // Add glow effect to focused ball
             if currentFocus == "near" {
                 addGlowEffect(to: nearBall, color: .green)
                 removeGlowEffect(from: farBall)
@@ -269,19 +255,16 @@ struct ARFocusView: UIViewRepresentable {
     }
     
     private func setupFocusBalls(in arView: ARSCNView) {
-        // Create near ball
         let nearBall = SCNNode(geometry: SCNSphere(radius: 0.05))
         nearBall.name = "nearBall"
-        nearBall.position = SCNVector3(0, 0, -0.5) // 0.5 meters away
+        nearBall.position = SCNVector3(0, 0, -0.5)
         nearBall.geometry?.firstMaterial?.diffuse.contents = UIColor.green
         
-        // Create far ball
         let farBall = SCNNode(geometry: SCNSphere(radius: 0.15))
         farBall.name = "farBall"
-        farBall.position = SCNVector3(0, 0, -10) // 10 meters away
+        farBall.position = SCNVector3(0, 0, -10)
         farBall.geometry?.firstMaterial?.diffuse.contents = UIColor.gray
         
-        // Add balls to scene
         arView.scene.rootNode.addChildNode(nearBall)
         arView.scene.rootNode.addChildNode(farBall)
     }
@@ -307,17 +290,14 @@ struct ARFocusView: UIViewRepresentable {
         }
         
         func session(_ session: ARSession, didFailWithError error: Error) {
-            // Handle session errors
             print("AR Session failed: \(error.localizedDescription)")
         }
         
         func sessionWasInterrupted(_ session: ARSession) {
-            // Handle session interruption
             print("AR Session was interrupted")
         }
         
         func sessionInterruptionEnded(_ session: ARSession) {
-            // Handle interruption end
             print("AR Session interruption ended")
         }
     }

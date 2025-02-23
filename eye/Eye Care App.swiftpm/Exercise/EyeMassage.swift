@@ -25,8 +25,6 @@ struct EyeMassageGuideView: View {
                             InstructionRow(number: 4, text: "Follow the guided massage positions")
                         }
                     }
-                    
-                    // Illustration Section
                     CardView(icon: "eyebrow", title: "Massage Pattern") {
                         VStack(spacing: 20) {
                             Image("eyemassage")
@@ -41,8 +39,6 @@ struct EyeMassageGuideView: View {
                                 .multilineTextAlignment(.center)
                         }
                     }
-                    
-                    // Benefits Section
                     CardView(icon: "checkmark.circle.fill", iconColor: .green, title: "Benefits") {
                         VStack(alignment: .leading, spacing: 8) {
                             BenefitRow(text: "Relieves eye strain and tension")
@@ -102,7 +98,6 @@ struct EyeMassageView: View {
                 Color.white.edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 30) {
-                    // Timer Display
                     VStack(spacing: 8) {
                         Text(timeString(from: remainingTime))
                             .font(.system(size: 60, weight: .bold))
@@ -119,7 +114,6 @@ struct EyeMassageView: View {
                     .cornerRadius(20)
                     .padding(.horizontal)
                     
-                    // Animation Area
                     ZStack {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(Color.blue.opacity(0.1))
@@ -136,7 +130,6 @@ struct EyeMassageView: View {
                     }
                     .padding(.horizontal)
                     
-                    // Progress indicators
                     HStack(spacing: 8) {
                         ForEach(0..<massageSteps.count) { index in
                             Circle()
@@ -184,7 +177,6 @@ struct EyeMassageView: View {
     private func updateExercise() {
         if remainingTime > 0 {
             remainingTime -= 1
-            
             if remainingTime.truncatingRemainder(dividingBy: 15) == 0 {
                 currentStep = (currentStep + 1) % massageSteps.count
                 updateHandPosition()
@@ -194,6 +186,7 @@ struct EyeMassageView: View {
                 utterance.volume = 0.8
                 synthesizer.speak(utterance)
             }
+            
         } else {
             stopExercise()
         }

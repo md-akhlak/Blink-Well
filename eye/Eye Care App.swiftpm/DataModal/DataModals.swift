@@ -51,7 +51,6 @@ struct ExerciseSession: Identifiable {
     let blinkCount: Int
     let twitchCount: Int
     
-    // Computed properties for display
     var formattedDate: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .short

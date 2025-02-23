@@ -1,4 +1,6 @@
+import Foundation
 import SwiftUI
+
 
 @MainActor
 struct BrickBreakerGameView: View {
@@ -46,7 +48,7 @@ struct BrickBreakerGameView: View {
         let paddleY = UIScreen.main.bounds.height - 100
         ballPosition = CGPoint(
             x: paddlePosition,
-            y: paddleY - 20 // Position above green paddle
+            y: paddleY - 20
         )
         ballVelocity = .zero
         isGameActive = false
@@ -55,7 +57,6 @@ struct BrickBreakerGameView: View {
     func startGame() {
         if !isGameActive {
             isGameActive = true
-            // Initial velocity when game starts
             ballVelocity = CGPoint(x: 7, y: -7)
             startTimer()
         }
@@ -72,20 +73,16 @@ struct BrickBreakerGameView: View {
     
     func updateGame() {
         if isGameActive {
-            // Update ball position
             let nextPosition = CGPoint(
                 x: ballPosition.x + ballVelocity.x,
                 y: ballPosition.y + ballVelocity.y
             )
-            
-            // Ball dimensions
+
             let ballRadius: CGFloat = 10
             
-            // Screen boundaries
             let screenWidth = UIScreen.main.bounds.width
             let screenHeight = UIScreen.main.bounds.height
             
-            // Green paddle dimensions
             let paddleY = screenHeight - 100
             let paddleHeight: CGFloat = 20
             let paddleWidth: CGFloat = 100
@@ -94,7 +91,6 @@ struct BrickBreakerGameView: View {
             let paddleTop = paddleY - paddleHeight/2
             let paddleBottom = paddleY + paddleHeight/2
             
-            // Check wall collisions
             if nextPosition.x <= ballRadius || nextPosition.x >= screenWidth - ballRadius {
                 ballVelocity.x *= -1
             }
@@ -102,31 +98,25 @@ struct BrickBreakerGameView: View {
                 ballVelocity.y *= -1
             }
             
-            // Check green paddle collision
             if nextPosition.y + ballRadius >= paddleTop && 
                nextPosition.y - ballRadius <= paddleBottom &&
                nextPosition.x + ballRadius >= paddleLeft && 
                nextPosition.x - ballRadius <= paddleRight {
                 
-                // Ball hit the green paddle
                 let hitPoint = (nextPosition.x - paddlePosition) / (paddleWidth/2)
                 let maxAngle: CGFloat = .pi / 3
                 let angle = hitPoint * maxAngle
                 
-                // Set consistent ball speed after paddle hit
                 let speed: CGFloat = 10.0
                 ballVelocity.x = speed * sin(angle)
                 ballVelocity.y = -speed * cos(angle)
                 
-                // Position ball above paddle to prevent sticking
                 ballPosition.y = paddleTop - ballRadius
             } else if nextPosition.y > paddleBottom {
-                // Ball missed the green paddle
                 gameOver()
                 return
             }
             
-            // Update ball position if still in play
             if isGameActive {
                 ballPosition = nextPosition
                 checkBrickCollisions()
@@ -158,19 +148,17 @@ struct BrickBreakerGameView: View {
                     if ballRight >= brickLeft && ballLeft <= brickRight &&
                        ballBottom >= brickTop && ballTop <= brickBottom {
                         
-                        // Ball hits a brick
                         bricks[row][col].isActive = false
                         
-                        // Determine collision side
                         let previousBallCenter = CGPoint(
                             x: ballPosition.x - ballVelocity.x,
                             y: ballPosition.y - ballVelocity.y
                         )
                         
                         if previousBallCenter.x < brickLeft || previousBallCenter.x > brickRight {
-                            ballVelocity.x *= -1 // Horizontal collision
+                            ballVelocity.x *= -1
                         } else {
-                            ballVelocity.y *= -1 // Vertical collision
+                            ballVelocity.y *= -1
                         }
                         
                         if checkLevelComplete() {
@@ -210,7 +198,6 @@ struct BrickBreakerGameView: View {
             ZStack {
                 Color.black.edgesIgnoringSafeArea(.all)
                 
-                // Bricks
                 ForEach(0..<bricks.count, id: \.self) { row in
                     ForEach(0..<bricks[row].count, id: \.self) { col in
                         if bricks[row][col].isActive {
@@ -223,13 +210,11 @@ struct BrickBreakerGameView: View {
                     }
                 }
                 
-                // White ball
                 Circle()
                     .fill(Color.white)
                     .frame(width: 20, height: 20)
                     .position(ballPosition)
                 
-                // Green paddle
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.green)
                     .frame(width: 100, height: 20)
@@ -249,7 +234,6 @@ struct BrickBreakerGameView: View {
                     .onChanged { value in
                         paddlePosition = value.location.x
                         if !isGameActive {
-                            // Ball follows paddle before game starts
                             ballPosition.x = value.location.x
                         }
                     }

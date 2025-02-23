@@ -16,7 +16,6 @@ struct BlinkingGuideView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                // Instructions Section
                 CardView(icon: "eye.fill", title: "Instructions") {
                     VStack(alignment: .leading, spacing: 8) {
                         InstructionRow(number: 1, text: "Blink naturally for 20 seconds")
@@ -25,7 +24,6 @@ struct BlinkingGuideView: View {
                     }
                 }
                 
-                // Illustration Section
                 CardView(icon: "eye", title: "How to Blink") {
                     HStack(alignment: .center, spacing: 20) {
                         
@@ -60,7 +58,6 @@ struct BlinkingGuideView: View {
                     .padding(.vertical, 8)
                 }
                 
-                // Benefits Section
                 CardView(icon: "checkmark.circle.fill", iconColor: .green, title: "Benefits") {
                     VStack(alignment: .leading, spacing: 8) {
                         BenefitRow(text: "Reduces digital eye strain")
@@ -99,7 +96,7 @@ struct EyeBlinkingView: View {
     @State private var remainingTime: TimeInterval = 60
     @State private var currentPhase: BlinkPhase = .natural
     @State private var eyesOpen = true
-    @State private var isExerciseActive = true  // New state to track if exercise is active
+    @State private var isExerciseActive = true
     
     enum BlinkPhase: String {
         case natural = "Natural Blinks"
@@ -132,7 +129,6 @@ struct EyeBlinkingView: View {
                 Color(.systemBackground).ignoresSafeArea()
                 
                 VStack(spacing: 24) {
-                    // Timer Display
                     VStack(spacing: 8) {
                         Text(timeString(from: remainingTime))
                             .font(.system(size: 60, weight: .bold))
@@ -148,26 +144,20 @@ struct EyeBlinkingView: View {
                     .background(Color.blue.opacity(0.1))
                     .cornerRadius(20)
                     
-                    // Eye Animation Area
                     ZStack {
                         Circle()
                             .fill(Color.blue.opacity(0.1))
                             .frame(width: geometry.size.width * 0.8)
                         
-                        // Eyes Container
                         HStack(spacing: geometry.size.width * 0.15) {
-                            // Left Eye
                             EyeShape(isOpen: eyesOpen)
                                 .frame(width: geometry.size.width * 0.2)
-                            
-                            // Right Eye
                             EyeShape(isOpen: eyesOpen)
                                 .frame(width: geometry.size.width * 0.2)
                         }
                     }
-                    .frame(height: geometry.size.height * 0.4)
                     
-                    // Instructions
+                    .frame(height: geometry.size.height * 0.4)
                     VStack(spacing: 12) {
                         Text(currentPhase.rawValue)
                             .font(.title2.bold())
@@ -190,7 +180,6 @@ struct EyeBlinkingView: View {
                     
                     Spacer()
                     
-                    // Stop Button
                     Button(action: stopExercise) {
                         Label("End Exercise", systemImage: "xmark.circle.fill")
                             .font(.headline)
@@ -206,12 +195,11 @@ struct EyeBlinkingView: View {
         }
         .onAppear(perform: startExercise)
         .onReceive(timer) { _ in
-            if isExerciseActive {  // Only update if exercise is active
+            if isExerciseActive {
                 updateExercise()
             }
         }
         .onDisappear {
-            // Cleanup when view disappears
             cleanupExercise()
         }
     }
@@ -223,19 +211,19 @@ struct EyeBlinkingView: View {
     }
     
     private func startBlinkSequence() {
-        guard isExerciseActive else { return }  // Don't start new sequence if not active
+        guard isExerciseActive else { return }
         
         switch currentPhase {
         case .natural:
             withAnimation(.easeInOut(duration: 0.5)) {
                 eyesOpen.toggle()
             }
-            if isExerciseActive {  // Check before speaking
+            if isExerciseActive {
                 speakInstruction(eyesOpen ? "Open your eyes" : "Close your eyes")
             }
-            if isExerciseActive {  // Check before scheduling next sequence
+            if isExerciseActive {
                 DispatchQueue.main.asyncAfter(deadline: .now() + currentPhase.duration) {
-                    if isExerciseActive {  // Check again when async block executes
+                    if isExerciseActive {
                         startBlinkSequence()
                     }
                 }
@@ -296,7 +284,6 @@ struct EyeBlinkingView: View {
     private func stopExercise() {
         cleanupExercise()
         
-        // Speak stop message and dismiss
         let utterance = AVSpeechUtterance(string: "Exercise stopped")
         utterance.rate = 0.5
         utterance.volume = 0.8
@@ -310,7 +297,6 @@ struct EyeBlinkingView: View {
     private func completeExercise() {
         cleanupExercise()
         
-        // Speak completion message and dismiss
         let utterance = AVSpeechUtterance(string: "Exercise complete. Good job!")
         utterance.rate = 0.5
         utterance.volume = 0.8
@@ -322,13 +308,11 @@ struct EyeBlinkingView: View {
     }
     
     private func cleanupExercise() {
-        // Stop all ongoing activities
         isExerciseActive = false
         synthesizer.stopSpeaking(at: .immediate)
         
-        // Cancel any pending animations
         withAnimation(.easeInOut(duration: 0.3)) {
-            eyesOpen = true  // Reset eyes to open state
+            eyesOpen = true
         }
     }
     
@@ -354,25 +338,21 @@ struct EyeShape: View {
     var body: some View {
         ZStack {
             if isOpen {
-                // Open Eye
                 ZStack {
-                    // Eye white
                     Capsule()
                         .fill(Color.white)
+                        .frame(width: 5, height: 30)
                         .shadow(color: .black.opacity(0.1), radius: 2, y: 2)
                     
-                    // Iris
                     Circle()
                         .fill(Color.blue)
                         .frame(width: 20, height: 20)
                     
-                    // Pupil
                     Circle()
                         .fill(Color.black)
                         .frame(width: 10, height: 10)
                 }
             } else {
-                // Closed Eye
                 Capsule()
                     .fill(Color.white)
                     .frame(height: 2)

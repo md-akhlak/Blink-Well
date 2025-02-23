@@ -31,7 +31,3 @@ struct PatternButton: View {
     }
 }
 
-
-
-
-

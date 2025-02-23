@@ -17,7 +17,6 @@ struct StarInSkyGuideView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                // Instructions Section
                 CardView(icon: "info.circle.fill", title: "Instructions") {
                     VStack(alignment: .leading, spacing: 12) {
                         InstructionRow(number: 1, text: "Find a comfortable position near a window")
@@ -27,10 +26,9 @@ struct StarInSkyGuideView: View {
                     }
                 }
                 
-                // Illustration Section
                 CardView(icon: "moon.stars", title: "Exercise Pattern") {
                     VStack(spacing: 20) {
-                        Image("star") // Star exercise image from assets
+                        Image("star")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 120)
@@ -43,7 +41,6 @@ struct StarInSkyGuideView: View {
                     }
                 }
                 
-                // Benefits Section
                 CardView(icon: "checkmark.circle.fill", iconColor: .green, title: "Benefits") {
                     VStack(alignment: .leading, spacing: 8) {
                         BenefitRow(text: "Improves distance vision")
@@ -79,7 +76,7 @@ struct StarInSkyGuideView: View {
 
 struct StarInSkyView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var remainingTime: TimeInterval = 30 // 2 minutes exercise
+    @State private var remainingTime: TimeInterval = 30
     @State private var starOpacity: Double = 0.0
     @State private var starScale: CGFloat = 1.0
     @State private var isAnimating = false
@@ -91,10 +88,7 @@ struct StarInSkyView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // Night sky background
                 Color.black.ignoresSafeArea()
-                
-                // Stars background
                 ForEach(0..<50) { index in
                     Circle()
                         .fill(Color.white)
@@ -107,7 +101,6 @@ struct StarInSkyView: View {
                 }
                 
                 VStack(spacing: 30) {
-                    // Timer Display
                     VStack(spacing: 8) {
                         Text(timeString(from: remainingTime))
                             .font(.system(size: 60, weight: .bold))
@@ -124,9 +117,7 @@ struct StarInSkyView: View {
                     .cornerRadius(20)
                     .padding(.horizontal)
                     
-                    // Exercise Area
                     ZStack {
-                        // Main focus star
                         Image(systemName: "star.fill")
                             .resizable()
                             .scaledToFit()
@@ -136,7 +127,6 @@ struct StarInSkyView: View {
                             .scaleEffect(starScale)
                             .shadow(color: .yellow.opacity(0.5), radius: 10)
                         
-                        // Glow effect
                         ForEach(0..<3) { i in
                             Image(systemName: "star.fill")
                                 .resizable()
@@ -150,14 +140,12 @@ struct StarInSkyView: View {
                     }
                     .frame(height: 280)
                     
-                    // Current Phase
                     Text(currentPhase)
                         .font(.title2.bold())
                         .foregroundColor(.white)
                     
                     Spacer()
                     
-                    // Instructions
                     VStack(spacing: 8) {
                         Text("Keep your gaze steady")
                             .font(.headline)
@@ -172,7 +160,6 @@ struct StarInSkyView: View {
                     .cornerRadius(12)
                     .padding(.horizontal)
                     
-                    // Stop Button
                     Button(action: { stopExercise() }) {
                         Label("End Exercise", systemImage: "xmark.circle.fill")
                             .font(.headline)
@@ -204,13 +191,11 @@ struct StarInSkyView: View {
     private func startStarAnimation() {
         guard isAnimating else { return }
         
-        // Fade in
         withAnimation(.easeIn(duration: 2)) {
             starOpacity = 1.0
             starScale = 1.2
         }
         
-        // Subtle pulsing animation
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             guard isAnimating else { return }
             withAnimation(.easeInOut(duration: 3).repeatForever()) {
@@ -222,8 +207,6 @@ struct StarInSkyView: View {
     private func updateExercise() {
         if remainingTime > 0 {
             remainingTime -= 1
-            
-            // Update instructions periodically
             if remainingTime.truncatingRemainder(dividingBy: 30) == 0 {
                 speakInstruction("Keep focusing on the star. Blink if needed.")
             }

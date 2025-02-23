@@ -17,7 +17,6 @@ struct FlowerEffectGuideView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                // Instructions Section
                 CardView(icon: "info.circle.fill", title: "Instructions") {
                     VStack(alignment: .leading, spacing: 12) {
                         InstructionRow(number: 1, text: "Sit comfortably and maintain good posture")
@@ -27,10 +26,9 @@ struct FlowerEffectGuideView: View {
                     }
                 }
                 
-                // Illustration Section
                 CardView(icon: "sparkles", title: "Exercise Pattern") {
                     VStack(spacing: 20) {
-                        Image("flower") // Add flower pattern image to assets
+                        Image("flower")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 120)
@@ -43,7 +41,6 @@ struct FlowerEffectGuideView: View {
                     }
                 }
                 
-                // Benefits Section
                 CardView(icon: "checkmark.circle.fill", iconColor: .green, title: "Benefits") {
                     VStack(alignment: .leading, spacing: 8) {
                         BenefitRow(text: "Improves focus flexibility")
@@ -95,7 +92,6 @@ struct FlowerEffectView: View {
                 Color(.systemBackground).ignoresSafeArea()
                 
                 VStack(spacing: 30) {
-                    // Timer Display
                     VStack(spacing: 8) {
                         Text(timeString(from: remainingTime))
                             .font(.system(size: 60, weight: .bold))
@@ -112,9 +108,7 @@ struct FlowerEffectView: View {
                     .cornerRadius(20)
                     .padding(.horizontal)
                     
-                    // Exercise Area
                     ZStack {
-                        // Background glow
                         Circle()
                             .fill(
                                 RadialGradient(
@@ -128,7 +122,6 @@ struct FlowerEffectView: View {
                             .scaleEffect(scale)
                             .opacity(opacity)
                         
-                        // Flower petals
                         ForEach(0..<8) { index in
                             PetalShape()
                                 .fill(
@@ -144,7 +137,6 @@ struct FlowerEffectView: View {
                         }
                         .scaleEffect(scale)
                         
-                        // Center point
                         Circle()
                             .fill(
                                 RadialGradient(
@@ -159,14 +151,12 @@ struct FlowerEffectView: View {
                     }
                     .frame(height: 300)
                     
-                    // Current Phase
                     Text(currentPhase)
                         .font(.title2.bold())
                         .foregroundColor(.blue)
                     
                     Spacer()
-                    
-                    // Instructions
+
                     VStack(spacing: 8) {
                         Text("Focus on the center point")
                             .font(.headline)
@@ -237,8 +227,6 @@ struct FlowerEffectView: View {
     private func updateExercise() {
         if remainingTime > 0 {
             remainingTime -= 1
-            
-            // Update phase text
             currentPhase = scale > 1.2 ? "Expanding" : "Contracting"
         } else {
             stopExercise()

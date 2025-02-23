@@ -16,18 +16,32 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var viewModel = EyeTrackingViewModel()
     @State private var selectedDuration: TimeInterval = 30
+    @State private var showingSplash = true
     
     var body: some View {
         ZStack {
-            if viewModel.isExerciseActive {
-                ExerciseView(viewModel: viewModel)
-                    .transition(.move(edge: .bottom))
-                    .zIndex(1)
-                    .navigationBarHidden(true)
+            if showingSplash {
+                SplashScreenView()
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            withAnimation(.easeOut(duration: 0.5)) {
+                                showingSplash = false
+                            }
+                        }
+                    }
+            } else {
+                ZStack {
+                    if viewModel.isExerciseActive {
+                        ExerciseView(viewModel: viewModel)
+                            .transition(.move(edge: .bottom))
+                            .zIndex(1)
+                            .navigationBarHidden(true)
+                    }
+                    
+                    MainTabView(viewModel: viewModel, selectedDuration: $selectedDuration)
+                        .opacity(viewModel.isExerciseActive ? 0 : 1)
+                }
             }
-            
-            MainTabView(viewModel: viewModel, selectedDuration: $selectedDuration)
-                .opacity(viewModel.isExerciseActive ? 0 : 1)
         }
     }
 }
@@ -93,14 +107,14 @@ struct StatisticsSection: View {
             HStack(spacing: 16) {
                 StatisticCard(
                     title: "Blinks",
-                    value: viewModel.blinkCount,
+                    value: viewModel.dailyBlinkCount,
                     icon: "eye.fill",
                     color: .blue
                 )
                 
                 StatisticCard(
                     title: "Twitches",
-                    value: viewModel.eyebrowTwitchCount,
+                    value: viewModel.dailyTwitchCount,
                     icon: "exclamationmark.triangle.fill",
                     color: .orange
                 )
@@ -357,109 +371,36 @@ struct ExerciseTabView: View {
 struct SplashScreenView: View {
     var body: some View {
         ZStack {
-            // Using a more medical/professional light blue-green
-            Color(red: 100/255, green: 200/255, blue: 190/255)
-                .ignoresSafeArea()
-            
-            VStack(spacing: 24) {
-                // Top section with icon and main title
-                VStack(spacing: 16) {
-                    Image(systemName: "eye.circle.fill")
-                        .font(.system(size: 80))
-                        .foregroundColor(.white)
-                    
-                    Text("Blink Guardian")
-                        .font(.system(size: 36, weight: .bold))
-                        .foregroundColor(.white)
-                }
-                
-                // Middle section with clear problem statement
-                VStack(spacing: 12) {
-                    Text("Monitor • Analyze • Improve")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                    
-                    Text("Smart Blepharospasm & Eye Tic Tracking")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
-                }
-                .padding(.vertical, 8)
-                
-                // Key features section
-                VStack(spacing: 16) {
-                    KeyFeatureRow(
-                        icon: "eye.trianglebadge.exclamationmark",
-                        title: "Track Symptoms",
-                        description: "Monitor blinks, twitches & spasms"
-                    )
-                    
-                    KeyFeatureRow(
-                        icon: "chart.line.uptrend.xyaxis",
-                        title: "Analyze Patterns",
-                        description: "Identify triggers & peak times"
-                    )
-                    
-                    KeyFeatureRow(
-                        icon: "brain.head.profile",
-                        title: "Manage Condition",
-                        description: "Guided exercises & relaxation"
-                    )
-                }
-                .padding(.top, 8)
-            }
-            .padding(.horizontal, 30)
-        }
-    }
-}
+            LinearGradient(
+                colors: [
+                    Color(red: 200/255, green: 250/255, blue: 200/255),
+                    Color(red: 144/255, green: 190/255, blue: 200/255)
 
-// Helper view for feature rows
-struct KeyFeatureRow: View {
-    let icon: String
-    let title: String
-    let description: String
-    
-    var body: some View {
-        HStack(spacing: 14) {
-            Image(systemName: icon)
-                .font(.system(size: 24))
-                .foregroundColor(.white)
-                .frame(width: 32)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
             
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.white)
+            VStack(spacing: 20) {
+                VStack(spacing: 10) {
+                    Image(systemName: "eye.fill")
+                        .font(.system(size: 60))
+                        .foregroundColor(.white)
+                        
+                    
+                    Text("Blink Care")
+                        .font(.system(size: 32, weight: .semibold))
+                        .foregroundColor(.white)
+                }
                 
-                Text(description)
-                    .font(.system(size: 14))
+                Text("Your Eye Wellness Companion")
+                    .font(.system(size: 22, weight: .medium))
                     .foregroundColor(.white.opacity(0.9))
+                    .padding(.vertical)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .background(Color.white.opacity(0.15))
-        .cornerRadius(12)
     }
 }
 
-// Helper view for feature items
-struct FeatureText: View {
-    let icon: String
-    let text: String
-    
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.system(size: 16))
-                .foregroundColor(.white)
-            
-            Text(text)
-                .font(.subheadline)
-                .fontWeight(.medium)
-        }
-        .foregroundColor(.white)
-    }
-}
+

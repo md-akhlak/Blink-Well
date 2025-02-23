@@ -40,7 +40,6 @@ struct EyeRollingGuideView: View {
                             InstructionRow(number: 3, text: "Blink naturally when needed")
                         }
                     }
-                    
                     CardView(icon: "eyes", title: "Exercise Patterns") {
                         VStack(spacing: 20) {
                             PatternRow(
@@ -62,8 +61,6 @@ struct EyeRollingGuideView: View {
                             )
                         }
                     }
-                    
-                    // Benefits Section
                     CardView(icon: "checkmark.circle.fill", iconColor: .green, title: "Benefits") {
                         VStack(alignment: .leading, spacing: 8) {
                             BenefitRow(text: "Strengthens eye muscles")
@@ -127,7 +124,6 @@ struct PatternRow: View {
     }
 }
 
-// Update the EyeRollingView with fixed patterns
 struct EyeRollingView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var remainingTime: TimeInterval = 90
@@ -148,7 +144,6 @@ struct EyeRollingView: View {
                     Color(.systemBackground).ignoresSafeArea()
                     
                     VStack(spacing: 20) {
-                        // Timer Display
                         VStack(spacing: 8) {
                             Text(timeString(from: remainingTime))
                                 .font(.system(size: 60, weight: .bold))
@@ -165,7 +160,6 @@ struct EyeRollingView: View {
                         .cornerRadius(20)
                         .padding(.horizontal)
                         
-                        // Pattern Name and Direction
                         VStack(spacing: 8) {
                             Text(currentPattern.name)
                                 .font(.title2.bold())
@@ -176,14 +170,11 @@ struct EyeRollingView: View {
                                 .foregroundColor(.blue.opacity(0.8))
                         }
                         
-                        // Exercise Area
                         ZStack {
-                            // Guide Path
                             getGuidePath()
                                 .stroke(Color.green.opacity(0.2), lineWidth: 2)
                                 .frame(width: 200, height: 200)
                             
-                            // Moving Orb
                             ZStack {
                                 Circle()
                                     .fill(Color.green.opacity(0.1))
@@ -200,9 +191,7 @@ struct EyeRollingView: View {
                         
                         Spacer()
                         
-                        // Bottom Instructions and Controls
                         VStack(spacing: 16) {
-                            // Instructions
                             VStack(spacing: 8) {
                                 Text("Follow the green dot with your eyes")
                                     .font(.headline)
@@ -215,7 +204,6 @@ struct EyeRollingView: View {
                             .background(Color.blue.opacity(0.1))
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             
-                            // Stop Exercise Button
                             Button(action: { stopExercise() }) {
                                 HStack {
                                     Image(systemName: "stop.circle.fill")
@@ -229,7 +217,6 @@ struct EyeRollingView: View {
                                 .cornerRadius(15)
                             }
                             
-                            // Progress indicators
                             HStack(spacing: 8) {
                                 ForEach(0..<3) { index in
                                     Circle()
@@ -286,8 +273,6 @@ struct EyeRollingView: View {
     private func updateExercise() {
         if remainingTime > 0 {
             remainingTime -= 1
-            
-            // Pattern changes
             if remainingTime == 60 {
                 currentPattern = .infinity
                 speakInstruction("Changing to infinity pattern")
@@ -296,7 +281,6 @@ struct EyeRollingView: View {
                 speakInstruction("Changing to octagonal pattern")
             }
             
-            // Direction changes within each pattern
             if remainingTime == 75 || remainingTime == 45 || remainingTime == 15 {
                 currentDirection = "Counterclockwise"
                 speakInstruction("Change direction")
@@ -343,8 +327,6 @@ struct EyeRollingView: View {
             let width: CGFloat = 200
             let height: CGFloat = 80
             let normalizedT = t.truncatingRemainder(dividingBy: 2 * .pi) / (2 * .pi)
-            
-            // Calculate position using parametric equations for infinity symbol (lemniscate)
             let a = width / 2
             let angle = normalizedT * 2 * .pi
             let denominator = 1 + sin(angle) * sin(angle)
@@ -355,7 +337,6 @@ struct EyeRollingView: View {
             )
             
         case .octagonal:
-            // Create octagon points
             let points = (0..<8).map { i -> CGPoint in
                 let angle = Double(i) * .pi / 4
                 return CGPoint(
@@ -369,7 +350,6 @@ struct EyeRollingView: View {
         rotationAngle += currentDirection == "Clockwise" ? 2 : -2
     }
 
-    // Helper function for linear interpolation
     private func lerp(start: CGFloat, end: CGFloat, t: CGFloat) -> CGFloat {
         return start + (end - start) * t
     }
@@ -391,7 +371,7 @@ struct EyeRollingView: View {
             }
         }
     }
-
+    
     private func getCurrentPatternIndex() -> Int {
         switch currentPattern {
         case .circular: return 0

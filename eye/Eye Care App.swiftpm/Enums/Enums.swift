@@ -31,27 +31,28 @@ enum GazePattern: String, CaseIterable, Identifiable {
         switch self {
         case .square:
             return [
-                CGPoint(x: -0.5, y: -0.5),
-                CGPoint(x: 0.5, y: -0.5),
-                CGPoint(x: 0.5, y: 0.5),
-                CGPoint(x: -0.5, y: 0.5),
-                CGPoint(x: -0.5, y: -0.5)
+                CGPoint(x: -0.7, y: -0.7),
+                CGPoint(x: 0.7, y: -0.7),
+                CGPoint(x: 0.7, y: 0.7),
+                CGPoint(x: -0.7, y: 0.7),
+                CGPoint(x: -0.7, y: -0.7)
             ]
         case .triangle:
             return [
-                CGPoint(x: 0, y: -0.5),
-                CGPoint(x: 0.5, y: 0.4),
-                CGPoint(x: -0.5, y: 0.4),
-                CGPoint(x: 0, y: -0.5)
+                CGPoint(x: 0, y: -0.7),
+                CGPoint(x: 0.7, y: 0.6),
+                CGPoint(x: -0.7, y: 0.6),
+                CGPoint(x: 0, y: -0.7)
             ]
         case .diamond:
             return [
-                CGPoint(x: 0, y: -0.5),
-                CGPoint(x: 0.5, y: 0),
-                CGPoint(x: 0, y: 0.5),
-                CGPoint(x: -0.5, y: 0),
-                CGPoint(x: 0, y: -0.5)
+                CGPoint(x: 0, y: -0.7),
+                CGPoint(x: 0.7, y: 0),
+                CGPoint(x: 0, y: 0.7),
+                CGPoint(x: -0.7, y: 0),
+                CGPoint(x: 0, y: -0.7)
             ]
         }
     }
 }
+

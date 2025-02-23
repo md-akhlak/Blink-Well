@@ -2,16 +2,20 @@
 //  File.swift
 //  Eye Care App
 //
-//  Created by Akhlak iSDP on 22/02/25.
+//  Created by Akhlak iSDP on 10/02/25.
 //
 
 import Foundation
-import SwiftUI
+import SwiftUI 
 import AVFoundation
 import ARKit
 
 
 class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
+    @Published var dailyBlinkCount = 0
+    @Published var dailyTwitchCount = 0
+    @Published var exerciseBlinkCount = 0
+    @Published var exerciseTwitchCount = 0
     @Published var exerciseSessions: [ExerciseSession] = []
     @Published var blinkCount = 0
     @Published var eyebrowTwitchCount = 0
@@ -22,19 +26,21 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published var isExerciseActive = false
     @Published var stressLevel: Int = 0
     @Published var screenTime: TimeInterval = 0
-    @Published var selectedDuration: TimeInterval = 30  // Add this property
-    
-    // New logs properties
+    @Published var selectedDuration: TimeInterval = 30
     @Published var blinkLogs: [SymptomLog] = []
     @Published var twitchLogs: [SymptomLog] = []
-    
-    // Add new properties
     @Published var showEyeStrainWarning = false
+    @Published var currentBlinkRate: Double = 0.0
+    @Published var currentTwitchRate: Double = 0.0
+    
     private var lastBlinkTimestamp: Date?
     private var lastTwitchTimestamp: Date?
     private var blinkThresholdReached = false
     private var twitchThresholdReached = false
-    
+    private var blinkRateTimer: Timer?
+    private var recentBlinks: [Date] = []
+    private var recentTwitches: [Date] = []
+    private let rateWindowDuration: TimeInterval = 60
     private var arSession: ARSession?
     private var timer: Timer?
     
@@ -49,8 +55,8 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     
     func startExercise() {
-        blinkCount = 0
-        eyebrowTwitchCount = 0
+        exerciseBlinkCount = 0
+        exerciseTwitchCount = 0
         eyeStrainDetected = false
         
         guard ARFaceTrackingConfiguration.isSupported else {
@@ -58,23 +64,18 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
             return
         }
         
-        print("Starting Exercise - Before Configuration")
-        
         let configuration = ARFaceTrackingConfiguration()
         configuration.isLightEstimationEnabled = true
         
         arSession?.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         
-        print("Starting Exercise - Session Running")
-        
         isTracking = true
         isExerciseActive = true
         exerciseDuration = selectedDuration
-        remainingTime = exerciseDuration  // Use exerciseDuration instead of hardcoded value
+        remainingTime = exerciseDuration
         
         print("Starting Exercise - State: isExerciseActive = \(isExerciseActive)")
         
-        // Start the timer
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             if self.remainingTime > 0 {
                 self.remainingTime -= 1
@@ -91,29 +92,23 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
         isTracking = false
         isExerciseActive = false
         
-        // Save the session with pattern information
         let newSession = ExerciseSession(
             date: Date(),
-            duration: exerciseDuration - remainingTime, // Actual duration spent
-            blinkCount: blinkCount,
-            twitchCount: eyebrowTwitchCount
+            duration: exerciseDuration - remainingTime,
+            blinkCount: exerciseBlinkCount,
+            twitchCount: exerciseTwitchCount
         )
         
-        // Add new session at the beginning of the array
         exerciseSessions.insert(newSession, at: 0)
-        
-        // Analyze results and log symptoms if needed
         analyzeResults()
         
-        // Reset counters
-        blinkCount = 0
-        eyebrowTwitchCount = 0
+        exerciseBlinkCount = 0
+        exerciseTwitchCount = 0
         eyeStrainDetected = false
         remainingTime = exerciseDuration
     }
     
     private func analyzeResults() {
-        // Log blinks if they exceed threshold
         if blinkCount > 10 {
             logSymptom(
                 type: "Blink",
@@ -122,7 +117,6 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
             )
         }
         
-        // Log twitches if they exceed threshold
         if eyebrowTwitchCount > 5 {
             logSymptom(
                 type: "Twitch",
@@ -131,17 +125,15 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
             )
         }
         
-        // Log eye strain if detected
         if eyeStrainDetected {
             logSymptom(
                 type: "Eye Strain",
-                intensity: 75, // High intensity since it was detected
+                intensity: 40,
                 trigger: "Exercise Session"
             )
         }
     }
     
-    // Symptom Logging Method
     func logSymptom(type: String, intensity: Int, trigger: String? = nil) {
         let log = SymptomLog(
             date: Date(),
@@ -157,12 +149,10 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
             twitchLogs.insert(log, at: 0)
         }
         
-        // Limit logs to last 10 entries
         blinkLogs = Array(blinkLogs.prefix(10))
         twitchLogs = Array(twitchLogs.prefix(10))
     }
     
-    // ARSessionDelegate Methods
     func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
         for anchor in anchors {
             if let faceAnchor = anchor as? ARFaceAnchor {
@@ -173,26 +163,38 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
     
     private func processFaceAnchor(_ faceAnchor: ARFaceAnchor) {
         let blendShapes = faceAnchor.blendShapes
+        let now = Date()
         
-        // Enhanced blink detection
+        recentBlinks = recentBlinks.filter { now.timeIntervalSince($0) <= rateWindowDuration }
+        recentTwitches = recentTwitches.filter { now.timeIntervalSince($0) <= rateWindowDuration }
+        
         if let leftEyeBlink = blendShapes[.eyeBlinkLeft]?.floatValue,
            let rightEyeBlink = blendShapes[.eyeBlinkRight]?.floatValue {
             let blinkThreshold: Float = 0.5
-            let now = Date()
             
             if leftEyeBlink > blinkThreshold && rightEyeBlink > blinkThreshold {
                 if !blinkThresholdReached {
                     blinkThresholdReached = true
                     if let lastBlink = lastBlinkTimestamp {
                         let timeSinceLastBlink = now.timeIntervalSince(lastBlink)
-                        if timeSinceLastBlink > 0.5 { // Increased minimum time between blinks
-                            blinkCount += 1
+                        if timeSinceLastBlink > 0.5 {
+                            dailyBlinkCount += 1
+                            if isExerciseActive {
+                                exerciseBlinkCount += 1
+                            }
                             lastBlinkTimestamp = now
+                            recentBlinks.append(now)
+                            currentBlinkRate = Double(recentBlinks.count)
                             logSymptom(type: "Blink", intensity: Int((leftEyeBlink + rightEyeBlink) * 50))
                         }
                     } else {
-                        blinkCount += 1
+                        dailyBlinkCount += 1
+                        if isExerciseActive {
+                            exerciseBlinkCount += 1
+                        }
                         lastBlinkTimestamp = now
+                        recentBlinks.append(now)
+                        currentBlinkRate = Double(recentBlinks.count)
                         logSymptom(type: "Blink", intensity: Int((leftEyeBlink + rightEyeBlink) * 50))
                     }
                 }
@@ -201,13 +203,11 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
             }
         }
         
-        // Enhanced twitch detection
         if let browInnerUp = blendShapes[.browInnerUp]?.floatValue,
            let browOuterUpLeft = blendShapes[.browOuterUpLeft]?.floatValue,
            let browOuterUpRight = blendShapes[.browOuterUpRight]?.floatValue {
             
             let twitchThreshold: Float = 0.4
-            let now = Date()
             let combinedBrowMovement = (browInnerUp + browOuterUpLeft + browOuterUpRight) / 3.0
             
             if combinedBrowMovement > twitchThreshold {
@@ -215,14 +215,24 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
                     twitchThresholdReached = true
                     if let lastTwitch = lastTwitchTimestamp {
                         let timeSinceLastTwitch = now.timeIntervalSince(lastTwitch)
-                        if timeSinceLastTwitch > 0.8 { // Increased minimum time between twitches
-                            eyebrowTwitchCount += 1
+                        if timeSinceLastTwitch > 0.8 {
+                            dailyTwitchCount += 1
+                            if isExerciseActive {
+                                exerciseTwitchCount += 1
+                            }
                             lastTwitchTimestamp = now
+                            recentTwitches.append(now)
+                            currentTwitchRate = Double(recentTwitches.count)
                             logSymptom(type: "Twitch", intensity: Int(combinedBrowMovement * 100))
                         }
                     } else {
-                        eyebrowTwitchCount += 1
+                        dailyTwitchCount += 1
+                        if isExerciseActive {
+                            exerciseTwitchCount += 1
+                        }
                         lastTwitchTimestamp = now
+                        recentTwitches.append(now)
+                        currentTwitchRate = Double(recentTwitches.count)
                         logSymptom(type: "Twitch", intensity: Int(combinedBrowMovement * 100))
                     }
                 }
@@ -231,7 +241,6 @@ class EyeTrackingViewModel: NSObject, ObservableObject, ARSessionDelegate {
             }
         }
         
-        // Enhanced eye strain detection
         if let eyeSqueezeLeft = blendShapes[.eyeSquintLeft]?.floatValue,
            let eyeSqueezeRight = blendShapes[.eyeSquintRight]?.floatValue {
             

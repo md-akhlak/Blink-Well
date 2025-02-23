@@ -15,7 +15,6 @@ struct TimeCard: View {
     
     var body: some View {
         VStack(spacing: 12) {
-            // Duration icon
             Circle()
                 .fill(isSelected ? Color.blue : Color.blue.opacity(0.1))
                 .frame(width: 56, height: 56)
@@ -28,8 +27,6 @@ struct TimeCard: View {
             Text(getDurationTitle())
                 .font(.headline)
                 .foregroundStyle(isSelected ? .primary : .secondary)
-            
-            // Time text
             Text(formatDuration(duration))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -58,7 +55,7 @@ struct TimeCard: View {
         case 60:
             return "clock.fill"
         default:
-            return "timer.square.fill"
+            return "timer.circle.fill"
         }
     }
     

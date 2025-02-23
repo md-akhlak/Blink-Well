@@ -12,7 +12,7 @@ import ARKit
 
 struct EyePalmingView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var remainingTime: TimeInterval = 30 // Total 30 seconds (15 for each phase)
+    @State private var remainingTime: TimeInterval = 30
     @State private var isAnimating = false
     @State private var showHeatWaves = false
     @State private var currentPhase: ExercisePhase = .rubbing
@@ -42,7 +42,6 @@ struct EyePalmingView: View {
                 Color(.systemBackground).ignoresSafeArea()
                 
                 VStack(spacing: 30) {
-                    // Timer Display
                     VStack(spacing: 8) {
                         Text(timeString(from: remainingTime))
                             .font(.system(size: 60, weight: .bold))
@@ -58,12 +57,9 @@ struct EyePalmingView: View {
                     .background(Color.blue.opacity(0.1))
                     .cornerRadius(20)
                     
-                    // Animation Area
                     ZStack {
                         if currentPhase == .rubbing {
-                            // Hands Rubbing Animation
                             HStack(spacing: -20) {
-                                // Left Hand
                                 Image(systemName: "hand.raised.fill")
                                     .resizable()
                                     .scaledToFit()
@@ -72,7 +68,6 @@ struct EyePalmingView: View {
                                     .rotationEffect(.degrees(isAnimating ? -10 : 10))
                                     .offset(x: isAnimating ? -5 : 5)
                                 
-                                // Right Hand
                                 Image(systemName: "hand.raised.fill")
                                     .resizable()
                                     .scaledToFit()
@@ -82,7 +77,6 @@ struct EyePalmingView: View {
                                     .offset(x: isAnimating ? 5 : -5)
                             }
                             .overlay {
-                                // Heat Waves
                                 if showHeatWaves {
                                     ForEach(0..<3) { index in
                                         Circle()
@@ -94,18 +88,14 @@ struct EyePalmingView: View {
                                 }
                             }
                         } else {
-                            // Face with Hands Covering Eyes
                             ZStack {
-                                // Face
-                                Image("placeoneyes") // Make sure to add a face image to assets
+                                Image("placeovereyes")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 250, height: 250)
                                 
-                                // Hands covering eyes
                                 HStack(spacing: -10) {
-                                    // Left Hand
-                                    Image("palm-left") // Add a left palm image to assets
+                                    Image("palm-left")
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 100)
@@ -113,8 +103,7 @@ struct EyePalmingView: View {
                                         .offset(x: 15, y: -45)
                                         .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
                                     
-                                    // Right Hand
-                                    Image("palm-right") // Add a right palm image to assets
+                                    Image("palm-right")
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 100)
@@ -129,9 +118,7 @@ struct EyePalmingView: View {
                                     value: isAnimating
                                 )
                                 
-                                // Warmth glow effect
                                 ZStack {
-                                    // Inner glow
                                     Circle()
                                         .fill(
                                             RadialGradient(
@@ -147,7 +134,6 @@ struct EyePalmingView: View {
                                         .frame(width: 140, height: 140)
                                         .offset(y: -45)
                                     
-                                    // Outer glow
                                     Circle()
                                         .fill(
                                             RadialGradient(
@@ -175,7 +161,6 @@ struct EyePalmingView: View {
                     .frame(height: 250)
                     .animation(.easeInOut(duration: 0.5), value: currentPhase)
                     
-                    // Instructions
                     Text(currentPhase.instruction)
                         .font(.title2)
                         .bold()
@@ -219,8 +204,6 @@ struct EyePalmingView: View {
     private func updateExercise() {
         if remainingTime > 0 {
             remainingTime -= 1
-            
-            // Switch to covering phase after 15 seconds
             if remainingTime == 15 {
                 withAnimation {
                     currentPhase = .covering
@@ -252,7 +235,6 @@ struct EyePalmingView: View {
     }
 }
 
-// Add this ExerciseView struct
 struct ExerciseView: View {
     @ObservedObject var viewModel: EyeTrackingViewModel
     @State private var targetPosition = CGPoint.zero
@@ -377,4 +359,4 @@ struct PalmingGuideView: View {
     }
 }
     
-    
+

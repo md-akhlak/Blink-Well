@@ -17,7 +17,6 @@ struct ZigZagGuideView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                // Instructions Section
                 CardView(icon: "info.circle.fill", title: "Instructions") {
                     VStack(alignment: .leading, spacing: 12) {
                         InstructionRow(number: 1, text: "Don't move your head while focusing on moving object.")
@@ -26,11 +25,9 @@ struct ZigZagGuideView: View {
                         InstructionRow(number: 4, text: "Stop exercise if you are feeling strain and repeat again after sometime.")
                     }
                 }
-                
-                // Illustration Section
                 CardView(icon: "zigzag", title: "Exercise Pattern") {
                     VStack(spacing: 20) {
-                        Image("zigzag") // Add zigzag pattern image to assets
+                        Image("zigzag")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 120)
@@ -42,8 +39,6 @@ struct ZigZagGuideView: View {
                             .multilineTextAlignment(.center)
                     }
                 }
-                
-                // Benefits Section
                 CardView(icon: "checkmark.circle.fill", iconColor: .green, title: "Benefits") {
                     VStack(alignment: .leading, spacing: 8) {
                         BenefitRow(text: "Improves eye movement control")
@@ -91,14 +86,12 @@ struct ZigZagExerciseView: View {
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     let animationTimer = Timer.publish(every: 0.016, on: .main, in: .common).autoconnect()
     
-    
-    // Zigzag pattern points
     let zigzagPoints: [CGPoint] = [
-        CGPoint(x: 0, y: 0),      // Start left
-        CGPoint(x: 0.25, y: 1),   // First peak
-        CGPoint(x: 0.5, y: 0),    // Middle valley
-        CGPoint(x: 0.75, y: 1),   // Second peak
-        CGPoint(x: 1, y: 0)       // End right
+        CGPoint(x: 0, y: 0),
+        CGPoint(x: 0.25, y: 1),
+        CGPoint(x: 0.5, y: 0),
+        CGPoint(x: 0.75, y: 1),
+        CGPoint(x: 1, y: 0)
     ]
     
     var body: some View {
@@ -107,7 +100,6 @@ struct ZigZagExerciseView: View {
                 Color(.systemBackground).ignoresSafeArea()
                 
                 VStack(spacing: 30) {
-                    // Timer Display
                     VStack(spacing: 8) {
                         Text(timeString(from: remainingTime))
                             .font(.system(size: 60, weight: .bold))
@@ -124,9 +116,7 @@ struct ZigZagExerciseView: View {
                     .cornerRadius(20)
                     .padding(.horizontal)
                     
-                    // Exercise Area
                     ZStack {
-                        // Zigzag path
                         Path { path in
                             let width: CGFloat = geometry.size.width - 80.0
                             let height: CGFloat = 200.0
@@ -141,7 +131,6 @@ struct ZigZagExerciseView: View {
                         }
                         .stroke(Color.blue.opacity(0.3), style: StrokeStyle(lineWidth: 2, dash: [5]))
                         
-                        // Moving dot
                         Circle()
                             .fill(
                                 RadialGradient(
@@ -158,7 +147,6 @@ struct ZigZagExerciseView: View {
                     .frame(height: 200)
                     .padding()
                     
-                    // Current Direction
                     Text(currentDirection)
                         .font(.title3)
                         .foregroundColor(.blue)
@@ -166,7 +154,6 @@ struct ZigZagExerciseView: View {
                     
                     Spacer()
                     
-                    // Instructions
                     VStack(spacing: 8) {
                         Text("Keep your head still")
                             .font(.headline)
@@ -180,7 +167,6 @@ struct ZigZagExerciseView: View {
                     .cornerRadius(12)
                     .padding(.horizontal)
                     
-                    // Stop Button
                     Button(action: { stopExercise() }) {
                         Label("Stop Exercise", systemImage: "xmark.circle.fill")
                             .font(.headline)
@@ -214,17 +200,16 @@ struct ZigZagExerciseView: View {
     
     private func updateDotPosition() {
         if isAnimating {
-            // Update progress based on direction
-            let progressIncrement: CGFloat = 0.005 // Adjust for speed
-            if remainingTime > 30 { // First 30 seconds - Left to Right
+            let progressIncrement: CGFloat = 0.005
+            if remainingTime > 30 {
                 animationProgress += progressIncrement
                 if animationProgress >= 1 {
-                    animationProgress = 0 // Reset to start for continuous motion
+                    animationProgress = 0
                 }
-            } else { // Last 30 seconds - Right to Left
+            } else {
                 animationProgress += progressIncrement
                 if animationProgress >= 1 {
-                    animationProgress = 0 // Reset to start for continuous motion
+                    animationProgress = 0
                 }
             }
         }
@@ -243,19 +228,16 @@ struct ZigZagExerciseView: View {
         let currentPoint = zigzagPoints[currentIndex]
         let nextPoint = zigzagPoints[nextIndex]
         
-        // Reverse the x-coordinate calculation for right-to-left movement
         let xPos: CGFloat
         let yPos: CGFloat
         
         if remainingTime > 30 {
-            // Left to right
             xPos = CGFloat(40) + (lerp(
                 start: CGFloat(currentPoint.x),
                 end: CGFloat(nextPoint.x),
                 t: segmentT
             ) * width)
         } else {
-            // Right to left - reverse the x-coordinate
             xPos = CGFloat(40) + ((1 - lerp(
                 start: CGFloat(currentPoint.x),
                 end: CGFloat(nextPoint.x),
@@ -280,7 +262,6 @@ struct ZigZagExerciseView: View {
         if remainingTime > 0 {
             remainingTime -= 1
             
-            // Change direction at 30 seconds
             if remainingTime == 30 {
                 currentDirection = "Right to Left"
                 speakInstruction("Change direction: Right to Left")

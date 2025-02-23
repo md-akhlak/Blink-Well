@@ -17,21 +17,51 @@ struct ExerciseContentView: View {
     let synthesizer: AVSpeechSynthesizer
     @Environment(\.dismiss) private var dismiss
     @State private var currentPattern: GazePattern = .square
-    @State private var animationTimer: Timer?
     @State private var patternProgress: Double = 0
     
-    private let animationSpeed: Double = 0.0005
+    private let animationSpeed: Double = 0.0020
     
     var body: some View {
             ScrollView(showsIndicators: false){
                 GeometryReader { geometry in
                     VStack(spacing: 20) {
-                        // Timer Display
                         Text(timeString(from: viewModel.remainingTime))
                             .font(.system(size: 44, weight: .bold, design: .rounded))
                             .monospacedDigit()
                         
-                        // Pattern Selection
+                        HStack(spacing: 20) {
+                            VStack {
+                                HStack {
+                                    Image(systemName: "eye")
+                                        .foregroundColor(.blue)
+                                    Text("\(viewModel.exerciseBlinkCount)")
+                                        .font(.system(size: 24, weight: .bold))
+                                }
+                                Text("Blinks")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding()
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(12)
+                            
+                            VStack {
+                                HStack {
+                                    Image(systemName: "waveform.path.ecg")
+                                        .foregroundColor(.orange)
+                                    Text("\(viewModel.exerciseTwitchCount)")
+                                        .font(.system(size: 24, weight: .bold))
+                                }
+                                Text("Twitches")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding()
+                            .background(Color.orange.opacity(0.1))
+                            .cornerRadius(12)
+                        }
+                        .padding(.horizontal)
+                        
                         HStack(spacing: 12) {
                             ForEach(GazePattern.allCases) { pattern in
                                 PatternButton(pattern: pattern, isSelected: currentPattern == pattern) {
@@ -42,33 +72,42 @@ struct ExerciseContentView: View {
                         }
                         .padding(.horizontal)
                         
-                        // Exercise Area
                         ZStack {
-                            // Pattern Guide
                             PatternGuideView(pattern: currentPattern)
                                 .stroke(Color.blue.opacity(0.2), lineWidth: 2)
                                 .frame(width: min(geometry.size.width - 40, 300), height: min(geometry.size.width - 40, 300))
                             
-                            // Moving Orb
-                            Circle()
-                                .fill(RadialGradient(
-                                    gradient: Gradient(colors: [.white, .blue]),
-                                    center: .center,
-                                    startRadius: 0,
-                                    endRadius: 20
-                                ))
-                                .frame(width: 25, height: 25)
-                                .shadow(color: .blue.opacity(0.5), radius: 10)
-                                .position(calculateOrbPosition(in: CGSize(
-                                    width: min(geometry.size.width - 40, 300),
-                                    height: min(geometry.size.width - 40, 300)
-                                )))
+                            TimelineView(.animation(minimumInterval: 0.001, paused: !isAnimating)) { timeline in
+                                
+                                Circle()
+                                    .fill(RadialGradient(
+                                        gradient: Gradient(colors: [.white, .blue]),
+                                        center: .center,
+                                        startRadius: 0,
+                                        endRadius: 15
+                                    ))
+                                    .frame(width: 30, height: 30)
+                                    .shadow(color: .blue.opacity(0.5), radius: 10)
+                                    .position(calculateOrbPosition(in: CGSize(
+                                        width: min(geometry.size.width - 40, 300),
+                                        height: min(geometry.size.width - 40, 300)
+                                    )))
+                                    .onChange(of: timeline.date) { _ in
+                                        if isAnimating {
+                                            withAnimation(.linear(duration: 0.05)) {
+                                                patternProgress += animationSpeed
+                                                if patternProgress >= 1.0 {
+                                                    patternProgress = 0
+                                                }
+                                            }
+                                        }
+                                    }
+                            }
                         }
                         .frame(height: min(geometry.size.width - 40, 300))
                         .background(Color.white.opacity(0.1))
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                         
-                        // Stop Button
                         Button(action: stopExercise) {
                             Label("Stop Exercise", systemImage: "xmark.circle.fill")
                                 .font(.headline)
@@ -82,73 +121,47 @@ struct ExerciseContentView: View {
                     }
                     .padding()
                 }
-                
         }
         .onAppear {
-            startAnimation()
+            isAnimating = true
             provideInitialGuidance()
         }
         .onDisappear {
-            stopAnimation()
+            isAnimating = false
         }
-    }
-    
-    private func startAnimation() {
-            animationTimer?.invalidate()
-            animationTimer = Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { _ in
-                Task { @MainActor in
-                    withAnimation(.linear(duration: 0.016)) {
-                        self.patternProgress += animationSpeed
-                        if self.patternProgress >= 1.0 {
-                            self.patternProgress = 0
-                        }
-                    }
-                }
-            }
-        }
-    
-    private func stopAnimation() {
-        animationTimer?.invalidate()
-        animationTimer = nil
     }
     
     private func restartAnimation() {
         patternProgress = 0
-        startAnimation()
+        isAnimating = true
+    }
+    
+    private func stopExercise() {
+        isAnimating = false
+        synthesizer.stopSpeaking(at: .immediate)
+        viewModel.stopExercise()
+        dismiss()
     }
     
     private func calculateOrbPosition(in size: CGSize) -> CGPoint {
         let points = currentPattern.points
         let totalPoints = points.count
-        
-        let progressIndex = patternProgress * Double(totalPoints - 1)
+        let wrappedProgress = patternProgress.truncatingRemainder(dividingBy: 1.0)
+        let progressIndex = wrappedProgress * Double(totalPoints - 1)
         let currentIndex = Int(floor(progressIndex))
-        let nextIndex = min(currentIndex + 1, totalPoints - 1)
-        let interpolation = progressIndex - Double(currentIndex)
+        let nextIndex = (currentIndex + 1) % totalPoints
+        let segmentProgress = progressIndex - Double(currentIndex)
         
         let currentPoint = points[currentIndex]
         let nextPoint = points[nextIndex]
         
-        let x = currentPoint.x + (nextPoint.x - currentPoint.x) * CGFloat(interpolation)
-        let y = currentPoint.y + (nextPoint.y - currentPoint.y) * CGFloat(interpolation)
+        let x = currentPoint.x + (nextPoint.x - currentPoint.x) * CGFloat(segmentProgress)
+        let y = currentPoint.y + (nextPoint.y - currentPoint.y) * CGFloat(segmentProgress)
         
-        // Convert normalized coordinates (-1 to 1) to view coordinates
         return CGPoint(
             x: size.width * (x + 1) / 2,
             y: size.height * (y + 1) / 2
         )
-    }
-    
-    private func stopExercise() {
-        // Stop animations and audio
-        stopAnimation()
-        synthesizer.stopSpeaking(at: .immediate)
-        
-        // Save the exercise session
-        viewModel.stopExercise()
-        
-        // Dismiss the exercise view
-        dismiss()
     }
     
     private func provideInitialGuidance() {
