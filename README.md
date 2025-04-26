@@ -1,7 +1,8 @@
 # Blink-Well: Eye Exercise App for Blepharospasm
 
 <div align="center">
-  <img src="eye/Eye Care App.swiftpm/Assets.xcassets/AppIcon.appiconset/AppIcon.png" alt="Blink-Well Logo" width="200"/>
+  <img src="![appLogo](https://github.com/user-attachments/assets/32f8f024-f363-49bb-922c-bea03f650a09)
+" alt="Blink-Well Logo" width="200"/>
   
   ![Swift](https://img.shields.io/badge/Swift-5.5+-orange.svg)
   ![Platform](https://img.shields.io/badge/Platform-iOS%2015.0+-blue.svg)
